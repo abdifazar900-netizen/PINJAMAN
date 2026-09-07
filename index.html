@@ -2,18 +2,18 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Pinjaman Mikro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aplikasi Kilas Pinjaman</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2830/2830284.png">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; position: fixed; width: 100%; height: 100%; }
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen text-slate-800 flex justify-center overflow-hidden">
+<body class="bg-slate-900 text-slate-800 flex justify-center items-center">
 
     <!-- LAYER LOADING -->
     <div id="loading-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
@@ -21,15 +21,15 @@
         <p id="loading-text" class="text-white font-medium text-sm tracking-wide">Sedang memproses...</p>
     </div>
 
-    <!-- KONTAINER UTAMA LAYAR HP (FIXED SCREEN HEIGHT) -->
-    <div id="app" class="w-full max-w-md h-screen bg-slate-50 flex flex-col justify-between overflow-hidden relative shadow-2xl">
+    <!-- KONTAINER UTAMA (FIXED FULL SCREEN HP) -->
+    <div id="app" class="w-full max-w-md h-[100dvh] bg-slate-50 flex flex-col justify-between overflow-hidden relative shadow-2xl">
         
-        <!-- BAGIAN LOGIN (BISA DI-SCROLL JIKA LAYAR KECIL) -->
+        <!-- BAGIAN LOGIN -->
         <div id="view-login" class="flex-grow overflow-y-auto p-8 flex flex-col justify-center space-y-6">
             <div class="text-center space-y-2">
                 <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white text-2xl font-bold">💳</div>
                 <h1 class="text-2xl font-bold text-slate-900">Kilas Pinjam</h1>
-                <p class="text-xs text-slate-500">Platform pinjaman mikro cepat dan terpercaya</p>
+                <p class="text-xs text-slate-500">Platform pinjaman cepat dan terpercaya</p>
             </div>
             <form id="form-login" class="space-y-4">
                 <div>
@@ -99,9 +99,8 @@
             <button onclick="switchView('login')" class="w-full text-center text-xs text-slate-500 hover:text-slate-800 pb-6">Sudah punya akun? Login</button>
         </div>
 
-        <!-- DASHBOARD NASABAH (FIXED HEADER & NAVBAR, TENGAH BISA DI-SCROLL) -->
+        <!-- DASHBOARD NASABAH (HEADER & FOOTER TERKUNCI, TENGAH SCROLLABLE) -->
         <div id="view-nasabah" class="hidden flex flex-col h-full overflow-hidden">
-            <!-- HEADER TETAP -->
             <div class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-4 flex-shrink-0 flex justify-between items-center shadow-md rounded-b-2xl">
                 <div>
                     <h2 class="font-bold text-sm" id="welcome-user">Halo</h2>
@@ -110,10 +109,10 @@
                 <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center font-bold text-xs">👤</div>
             </div>
 
-            <!-- KONTEN TENGAH (SCROLLABLE AREA) -->
+            <!-- AREA KONTEN TENGAH YANG BISA DIGULIR -->
             <div class="flex-grow overflow-y-auto p-4 space-y-4">
                 <!-- TAB 1: PENGAJUAN -->
-                <div id="tab-nasabah-pengajuan" class="space-y-3">
+                <div id="tab-nasabah-pengajuan" class="space-y-3 pb-6">
                     <div class="bg-gradient-to-br from-white to-indigo-50/50 p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
                         <h3 class="font-bold text-indigo-950 text-xs flex items-center gap-2"><span>✨</span> Form Pengajuan Pinjaman Baru</h3>
                         <form id="form-loan" class="space-y-3 text-xs">
@@ -144,6 +143,7 @@
                                 <p class="font-bold text-slate-700">Ketentuan Layanan:</p>
                                 <p>1. Data diri & rekening yang dilampirkan valid.</p>
                                 <p>2. Sanggup membayar tepat waktu sesuai jadwal.</p>
+                                <p>3. Kesalahan Transfer karna salah melampirkan Data bukan tanggung jawab kami.</p>
                             </div>
 
                             <div class="flex items-center gap-2 pt-1">
@@ -157,13 +157,13 @@
                 </div>
 
                 <!-- TAB 2: RIWAYAT -->
-                <div id="tab-nasabah-riwayat" class="hidden space-y-3">
+                <div id="tab-nasabah-riwayat" class="hidden space-y-3 pb-6">
                     <h3 class="font-bold text-slate-900 text-xs">Riwayat & Status Pengajuan</h3>
-                    <div id="list-history" class="space-y-3 text-xs pb-4"></div>
+                    <div id="list-history" class="space-y-3 text-xs"></div>
                 </div>
 
                 <!-- TAB 3: AKUN -->
-                <div id="tab-nasabah-akun" class="hidden space-y-3 pb-4">
+                <div id="tab-nasabah-akun" class="hidden space-y-3 pb-6">
                     <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
                         <h3 class="font-bold text-slate-900 text-xs border-b border-slate-100 pb-2">Informasi Profil Pribadi</h3>
                         <div class="space-y-2 text-xs text-slate-600">
@@ -194,9 +194,8 @@
             </div>
         </div>
 
-        <!-- DASHBOARD ADMIN (FIXED HEADER & NAVBAR, TENGAH BISA DI-SCROLL) -->
+        <!-- DASHBOARD ADMIN (HEADER & FOOTER TERKUNCI, TENGAH SCROLLABLE) -->
         <div id="view-admin" class="hidden flex flex-col h-full overflow-hidden">
-            <!-- HEADER TETAP -->
             <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-4 flex-shrink-0 flex justify-between items-center shadow-md rounded-b-2xl">
                 <div>
                     <h2 class="font-bold text-sm">Panel Administrator</h2>
@@ -205,14 +204,14 @@
                 <button onclick="logout()" class="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-lg font-medium transition">Keluar</button>
             </div>
 
-            <!-- KONTEN TENGAH (SCROLLABLE AREA) -->
+            <!-- AREA KONTEN TENGAH YANG BISA DIGULIR -->
             <div class="flex-grow overflow-y-auto p-4 space-y-4">
-                <div id="tab-admin-approve" class="space-y-3 pb-4">
+                <div id="tab-admin-approve" class="space-y-3 pb-6">
                     <h3 class="font-bold text-slate-900 text-xs">Daftar Pengajuan Masuk & Pembayaran</h3>
                     <div id="list-admin-loans" class="space-y-3 text-xs"></div>
                 </div>
 
-                <div id="tab-admin-jatuhtempo" class="hidden space-y-3 pb-4">
+                <div id="tab-admin-jatuhtempo" class="hidden space-y-3 pb-6">
                     <h3 class="font-bold text-slate-900 text-xs">Nasabah Jatuh Tempo (H-7)</h3>
                     <p class="text-[10px] text-slate-500">Daftar nasabah yang mendekati batas waktu pembayaran atau sudah lewat.</p>
                     <div id="list-admin-jatuhtempo" class="space-y-3 text-xs"></div>
@@ -503,7 +502,7 @@
                         ${item.buktiTf ? `<a href="${item.buktiTf}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded font-medium">Bukti Transfer Admin</a>` : ''}
                         ${item.buktiBayar1 ? `<a href="${item.buktiBayar1}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">Bayar 1</a>` : ''}
                         ${item.buktiBayar2 ? `<a href="${item.buktiBayar2}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">Bayar 2</a>` : ''}
-                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded font-medium">Bayar 3</a>` : ''}
+                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">Bayar 3</a>` : ''}
                     </div>
 
                     ${isApproved && !isLunas ? `
@@ -558,8 +557,8 @@
                     <div class="flex gap-1.5 text-[11px] pt-1">
                         ${item.fotoKtp ? `<a href="${item.fotoKtp}" target="_blank" class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded font-medium">KTP</a>` : ''}
                         ${item.buktiBayar1 ? `<a href="${item.buktiBayar1}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">B1</a>` : ''}
-                        ${item.buktiBayar2 ? `<a href="${item.buktiBayar2}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded font-medium">B2</a>` : ''}
-                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded font-medium">B3</a>` : ''}
+                        ${item.buktiBayar2 ? `<a href="${item.buktiBayar2}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">B2</a>` : ''}
+                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">B3</a>` : ''}
                     </div>
 
                     ${isPending ? `
@@ -738,7 +737,7 @@
                 document.getElementById('profil-nama').innerText = data.nama;
                 document.getElementById('profil-username').innerText = data.username;
                 document.getElementById('profil-ktp').innerText = data.noKtp;
-                document.getElementById('profil-wa').innerText = data.noWa || "-;
+                document.getElementById('profil-wa').innerText = data.noWa || "-";
                 document.getElementById('profil-alamat').innerText = data.alamat;
                 document.getElementById('profil-bank').innerText = data.bank;
                 document.getElementById('profil-rekening').innerText = data.noRekening;
