@@ -337,13 +337,13 @@
                         ${item.fotoKtp ? `<p><b>KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Lihat di Drive</a></p>` : ''}
                         ${item.buktiTf ? `<p><b>Pencairan Admin:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti Transfer Admin</a></p>` : ''}
                         
-                        <!-- TAMPILAN BUKTI BAYAR YANG SUDAH MASUK -->
+                        <!-- TAMPILAN BUKTI BAYAR -->
                         ${item.buktiBayar1 ? `<p><b>Bukti Bayar 1:</b> <a href="${item.buktiBayar1}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 1</a></p>` : ''}
                         ${item.buktiBayar2 ? `<p><b>Bukti Bayar 2:</b> <a href="${item.buktiBayar2}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 2</a></p>` : ''}
                         ${item.buktiBayar3 ? `<p><b>Bukti Bayar 3:</b> <a href="${item.buktiBayar3}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 3</a></p>` : ''}
 
-                        <!-- FORM PEMBAYARAN NASABAH -->
-                        ${(isApproved || isVerifikasi) && !isLunas ? `
+                        <!-- JAGAAN: Form pembayaran Hanya muncul jika Approved dan TIDAK sedang menunggu verifikasi -->
+                        ${isApproved && !isLunas ? `
                             <div class="mt-2 p-2 bg-blue-50 rounded border border-blue-200 space-y-2">
                                 <p class="font-bold text-blue-900 text-xs">Form Upload Pembayaran / Cicilan:</p>
                                 <select id="ket-bayar-${item.id}" class="w-full p-1 border rounded bg-white text-xs">
@@ -354,6 +354,13 @@
                                 </select>
                                 <input type="file" id="file-bayar-${item.id}" accept="image/*" class="w-full p-1 border rounded bg-white text-xs">
                                 <button onclick="kirimPembayaran('${item.id}', '${item.nama}', '${item.noKtp}')" class="bg-green-600 hover:bg-green-700 text-white py-1.5 px-2 rounded font-semibold w-full text-xs">Kirim Bukti Bayar</button>
+                            </div>
+                        ` : ''}
+
+                        <!-- Jika sedang menunggu verifikasi, tampilkan peringatan dan kunci form -->
+                        ${isVerifikasi ? `
+                            <div class="mt-2 p-2 bg-yellow-50 rounded border border-yellow-200 text-xs text-yellow-800 font-semibold text-center">
+                                ⏳ Pembayaran Anda sedang diperiksa admin. Mohon tunggu hingga diverifikasi sebelum mengunggah cicilan berikutnya.
                             </div>
                         ` : ''}
                     </div>`;
@@ -438,7 +445,6 @@
                 let cleanNama = namaNasabah.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase();
                 let ext = file.name.split('.').pop();
                 
-                // Format Nama File GDrive: BUKTI BAYAR - NAMA - NOKTP - TEMPO 1/2/3
                 let tempoNum = "1";
                 if (ketSelect.includes("Ke-2")) tempoNum = "2";
                 else if (ketSelect.includes("Ke-3") || ketSelect.includes("Pelunasan")) tempoNum = "3";
