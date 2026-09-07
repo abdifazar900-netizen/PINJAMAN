@@ -5,186 +5,218 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi Pinjaman Mikro</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 relative">
+<body class="bg-gradient-to-br from-slate-100 via-indigo-50 to-blue-100 min-h-screen text-slate-800 relative flex justify-center">
 
     <!-- LAYER LOADING -->
-    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 hidden flex-col items-center justify-center">
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
         <div class="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-white mb-4"></div>
-        <p id="loading-text" class="text-white font-semibold text-center px-4">Sedang memproses...</p>
+        <p id="loading-text" class="text-white font-medium text-sm tracking-wide">Sedang memproses...</p>
     </div>
 
-    <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-lg flex flex-col justify-between pb-16">
+    <div id="app" class="w-full max-w-md min-h-screen bg-white/95 backdrop-blur shadow-2xl flex flex-col justify-between pb-20">
         
         <!-- BAGIAN LOGIN -->
-        <div id="view-login" class="space-y-4 my-auto p-6">
-            <h1 class="text-2xl font-bold text-center text-blue-600">Pinjaman Kilat Mikro</h1>
-            <p class="text-xs text-center text-gray-500">Silakan login atau daftar untuk mengajukan pinjaman.</p>
-            <form id="form-login" class="space-y-3">
-                <input type="text" id="login-user" placeholder="Username" required class="w-full p-3 border rounded-lg text-sm">
-                <input type="password" id="login-pass" placeholder="Password" required class="w-full p-3 border rounded-lg text-sm">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-semibold">Login</button>
+        <div id="view-login" class="space-y-6 my-auto p-8">
+            <div class="text-center space-y-2">
+                <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white text-2xl font-bold">💳</div>
+                <h1 class="text-2xl font-bold text-slate-900">Kilas Pinjam</h1>
+                <p class="text-xs text-slate-500">Platform pinjaman mikro cepat dan terpercaya</p>
+            </div>
+            <form id="form-login" class="space-y-4">
+                <div>
+                    <label class="text-xs font-semibold text-slate-600 mb-1 block">Username</label>
+                    <input type="text" id="login-user" placeholder="Masukkan username" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-600 mb-1 block">Password</label>
+                    <input type="password" id="login-pass" placeholder="••••••••" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-3 rounded-xl font-semibold text-sm shadow-lg shadow-indigo-600/30 transition transform active:scale-95">Masuk Sekarang</button>
             </form>
-            <button onclick="switchView('register')" class="w-full text-center text-sm text-blue-500 mt-2">Belum punya akun? Daftar</button>
+            <button onclick="switchView('register')" class="w-full text-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition">Belum punya akun? Daftar di sini</button>
         </div>
 
         <!-- BAGIAN REGISTER -->
-        <div id="view-register" class="hidden space-y-3 my-auto p-6">
-            <h1 class="text-xl font-bold text-center text-blue-600">Daftar Akun Baru</h1>
-            <form id="form-register" class="space-y-2 text-sm">
-                <input type="text" id="reg-user" placeholder="Buat Username" required class="w-full p-2.5 border rounded">
-                <input type="password" id="reg-pass" placeholder="Buat Password" required class="w-full p-2.5 border rounded">
-                <input type="text" id="reg-nama" placeholder="Nama Lengkap sesuai KTP" required class="w-full p-2.5 border rounded">
-                <input type="text" id="reg-ktp" placeholder="Nomor KTP (16 Digit)" required class="w-full p-2.5 border rounded">
-                <input type="text" id="reg-wa" placeholder="Nomor WhatsApp (Contoh: 08123456789)" required class="w-full p-2.5 border rounded">
+        <div id="view-register" class="hidden space-y-4 my-auto p-6 overflow-y-auto max-h-screen">
+            <div class="text-center pb-2">
+                <h1 class="text-xl font-bold text-slate-900">Pendaftaran Akun Baru</h1>
+                <p class="text-xs text-slate-500">Lengkapi data diri Anda dengan benar</p>
+            </div>
+            <form id="form-register" class="space-y-3 text-xs">
+                <div>
+                    <label class="font-semibold text-slate-600 mb-1 block">Username</label>
+                    <input type="text" id="reg-user" placeholder="Buat username unik" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-600 mb-1 block">Password</label>
+                    <input type="password" id="reg-pass" placeholder="Buat password" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-600 mb-1 block">Nama Lengkap (Sesuai KTP)</label>
+                    <input type="text" id="reg-nama" placeholder="Nama lengkap" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-600 mb-1 block">Nomor KTP (16 Digit)</label>
+                    <input type="text" id="reg-ktp" placeholder="320xxxxxxxxxxxxx" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-600 mb-1 block">Nomor WhatsApp Aktif</label>
+                    <input type="text" id="reg-wa" placeholder="08xxxxxxxxxx" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
                 
-                <!-- DETAIL ALAMAT TERPERINCI -->
-                <div class="bg-gray-50 p-3 rounded border space-y-2">
-                    <label class="text-xs font-bold text-gray-700">Detail Alamat Tempat Tinggal:</label>
-                    <input type="text" id="reg-kp" placeholder="Kampung / Jalan / Perumahan" required class="w-full p-2 border rounded bg-white text-xs">
+                <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-2">
+                    <label class="font-bold text-indigo-900 block">Detail Alamat Domisili:</label>
+                    <input type="text" id="reg-kp" placeholder="Kampung / Jalan / Perumahan" required class="w-full p-2.5 bg-white border border-slate-200 rounded-lg">
                     <div class="flex gap-2">
-                        <input type="text" id="reg-rt" placeholder="RT" required class="w-1/2 p-2 border rounded bg-white text-xs">
-                        <input type="text" id="reg-rw" placeholder="RW" required class="w-1/2 p-2 border rounded bg-white text-xs">
+                        <input type="text" id="reg-rt" placeholder="RT" required class="w-1/2 p-2.5 bg-white border border-slate-200 rounded-lg">
+                        <input type="text" id="reg-rw" placeholder="RW" required class="w-1/2 p-2.5 bg-white border border-slate-200 rounded-lg">
                     </div>
-                    <input type="text" id="reg-desa" placeholder="Desa / Kelurahan" required class="w-full p-2 border rounded bg-white text-xs">
-                    <input type="text" id="reg-kec" placeholder="Kecamatan" required class="w-full p-2 border rounded bg-white text-xs">
-                    <input type="text" id="reg-kab" placeholder="Kabupaten / Kota" required class="w-full p-2 border rounded bg-white text-xs">
-                    <input type="text" id="reg-prov" placeholder="Provinsi" required class="w-full p-2 border rounded bg-white text-xs">
+                    <input type="text" id="reg-desa" placeholder="Desa / Kelurahan" required class="w-full p-2.5 bg-white border border-slate-200 rounded-lg">
+                    <input type="text" id="reg-kec" placeholder="Kecamatan" required class="w-full p-2.5 bg-white border border-slate-200 rounded-lg">
+                    <input type="text" id="reg-kab" placeholder="Kabupaten / Kota" required class="w-full p-2.5 bg-white border border-slate-200 rounded-lg">
+                    <input type="text" id="reg-prov" placeholder="Provinsi" required class="w-full p-2.5 bg-white border border-slate-200 rounded-lg">
                 </div>
 
-                <input type="text" id="reg-bank" placeholder="Nama Bank (BCA/BRI/Mandiri, dll)" required class="w-full p-2.5 border rounded">
-                <input type="text" id="reg-rekening" placeholder="Nomor Rekening" required class="w-full p-2.5 border rounded">
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-2.5 rounded font-semibold">Daftar Sekarang</button>
+                <div>
+                    <label class="font-semibold text-slate-600 mb-1 block">Nama Bank</label>
+                    <input type="text" id="reg-bank" placeholder="BCA / BRI / Mandiri, dll" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-600 mb-1 block">Nomor Rekening</label>
+                    <input type="text" id="reg-rekening" placeholder="Nomor rekening pencairan" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-3 rounded-xl font-semibold shadow-lg shadow-emerald-600/20 transition mt-2">Daftar Sekarang</button>
             </form>
-            <button onclick="switchView('login')" class="w-full text-center text-sm text-gray-500 mt-2">Kembali ke Login</button>
+            <button onclick="switchView('login')" class="w-full text-center text-xs text-slate-500 hover:text-slate-800 pb-4">Sudah punya akun? Login</button>
         </div>
 
         <!-- DASHBOARD NASABAH -->
         <div id="view-nasabah" class="hidden flex flex-col justify-between min-h-screen">
-            <div class="bg-blue-600 text-white p-4 flex justify-between items-center shadow">
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-5 flex justify-between items-center shadow-md rounded-b-3xl">
                 <div>
-                    <h2 class="font-bold text-sm" id="welcome-user">Halo</h2>
-                    <span class="text-[10px] bg-blue-700 px-2 py-0.5 rounded text-blue-100">Nasabah Terverifikasi</span>
+                    <h2 class="font-bold text-base" id="welcome-user">Halo</h2>
+                    <span class="text-[10px] bg-white/25 backdrop-blur px-2.5 py-0.5 rounded-full text-white font-medium">Nasabah Terverifikasi</span>
                 </div>
-                <span class="text-xs font-semibold">Kilas Pinjam</span>
+                <div class="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center font-bold text-sm">👤</div>
             </div>
 
             <div class="p-4 flex-grow space-y-4">
                 <!-- TAB 1: PENGAJUAN -->
                 <div id="tab-nasabah-pengajuan" class="space-y-3">
-                    <div class="bg-blue-50 p-4 rounded-xl space-y-3 border border-blue-100">
-                        <h3 class="font-bold text-blue-900 text-sm">Form Pengajuan Pinjaman Baru</h3>
-                        <form id="form-loan" class="space-y-2 text-sm">
+                    <div class="bg-gradient-to-br from-white to-indigo-50/50 p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                        <h3 class="font-bold text-indigo-950 text-sm flex items-center gap-2"><span>✨</span> Form Pengajuan Pinjaman Baru</h3>
+                        <form id="form-loan" class="space-y-3 text-xs">
                             <div>
-                                <label class="text-xs text-gray-600">Nominal Pinjaman (Maksimal Rp1.000.000)</label>
-                                <input type="number" id="loan-nominal" placeholder="Contoh: 500000" max="1000000" min="100000" required class="w-full p-2 border rounded bg-white" oninput="hitungSimulasi(); checkFormValidity();">
+                                <label class="font-semibold text-slate-600 mb-1 block">Nominal Pinjaman (Maks. Rp1.000.000)</label>
+                                <input type="number" id="loan-nominal" placeholder="Contoh: 500000" max="1000000" min="100000" required class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition" oninput="hitungSimulasi(); checkFormValidity();">
                             </div>
                             <div>
-                                <label class="text-xs text-gray-600">Pilih Tenor / Jangka Waktu</label>
-                                <select id="loan-tenor" class="w-full p-2 border rounded bg-white" onchange="hitungSimulasi(); checkFormValidity();">
+                                <label class="font-semibold text-slate-600 mb-1 block">Pilih Tenor / Jangka Waktu</label>
+                                <select id="loan-tenor" class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition" onchange="hitungSimulasi(); checkFormValidity();">
                                     <option value="1">1 Bulan</option>
                                     <option value="2">2 Bulan</option>
                                     <option value="3" selected>3 Bulan</option>
                                 </select>
                             </div>
                             
-                            <div id="info-simulasi" class="bg-white p-2.5 rounded border border-blue-200 text-xs text-blue-900 space-y-1">
+                            <div id="info-simulasi" class="bg-indigo-50/70 p-3 rounded-xl border border-indigo-100 text-indigo-950 space-y-1">
                                 <div>Estimasi Cicilan: <b>Rp0 / bulan</b></div>
                                 <div>Jadwal Jatuh Tempo: <b>-</b></div>
                             </div>
 
                             <div class="space-y-1">
-                                <label class="text-xs text-gray-600">Foto KTP (Kamera / Galeri)</label>
-                                <div class="flex gap-2">
-                                    <input type="file" id="loan-foto-file" accept="image/*" capture="environment" required class="w-full p-1 border rounded bg-white text-xs" onchange="checkFormValidity()">
-                                </div>
+                                <label class="font-semibold text-slate-600 mb-1 block">Foto KTP (Kamera / Galeri)</label>
+                                <input type="file" id="loan-foto-file" accept="image/*" capture="environment" required class="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" onchange="checkFormValidity()">
                             </div>
 
-                            <div class="bg-gray-100 p-2.5 rounded border text-[11px] text-gray-600 space-y-1 mt-2">
-                                <p class="font-bold text-gray-800">Perjanjian & Ketentuan:</p>
-                                <p>1. Data diri dan rekening yang diberikan adalah benar.</p>
-                                <p>2. Sanggup melunasi cicilan sesuai jadwal jatuh tempo.</p>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
+                                <p class="font-bold text-slate-700">Ketentuan Layanan:</p>
+                                <p>1. Data diri & rekening yang dilampirkan valid.</p>
+                                <p>2. Sanggup membayar tepat waktu sesuai jadwal.</p>
                             </div>
 
-                            <div class="flex items-center gap-2 pt-1 pb-2">
-                                <input type="checkbox" id="check-setuju" required class="w-4 h-4 text-blue-600 rounded" onchange="checkFormValidity()">
-                                <label for="check-setuju" class="text-xs font-semibold text-gray-700">Saya menyetujui perjanjian pinjaman</label>
+                            <div class="flex items-center gap-2 pt-1 pb-1">
+                                <input type="checkbox" id="check-setuju" required class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500" onchange="checkFormValidity()">
+                                <label for="check-setuju" class="font-semibold text-slate-700">Saya menyetujui ketentuan pinjaman</label>
                             </div>
 
-                            <button type="submit" id="btn-submit-loan" disabled class="w-full bg-gray-400 text-white py-2 rounded font-semibold cursor-not-allowed transition-all duration-300">Lengkapi Data Untuk Mengajukan</button>
+                            <button type="submit" id="btn-submit-loan" disabled class="w-full bg-slate-300 text-white py-3 rounded-xl font-semibold cursor-not-allowed transition shadow-sm">Lengkapi Data Untuk Mengajukan</button>
                         </form>
                     </div>
                 </div>
 
                 <!-- TAB 2: RIWAYAT -->
                 <div id="tab-nasabah-riwayat" class="hidden space-y-3">
-                    <h3 class="font-bold text-gray-800 text-sm">Riwayat & Status Pengajuan Anda</h3>
+                    <h3 class="font-bold text-slate-900 text-sm">Riwayat & Status Pengajuan</h3>
                     <div id="list-history" class="space-y-3 text-xs"></div>
                 </div>
 
                 <!-- TAB 3: AKUN -->
                 <div id="tab-nasabah-akun" class="hidden space-y-4">
-                    <div class="bg-white p-4 rounded-xl border space-y-3 shadow-sm">
-                        <h3 class="font-bold text-gray-800 text-sm border-b pb-2">Informasi Data Pribadi</h3>
-                        <div class="space-y-2 text-xs text-gray-700">
-                            <p><b>Nama Lengkap:</b> <span id="profil-nama">-</span></p>
-                            <p><b>Username:</b> <span id="profil-username">-</span></p>
-                            <p><b>Nomor KTP:</b> <span id="profil-ktp">-</span></p>
-                            <p><b>No WhatsApp:</b> <span id="profil-wa">-</span></p>
-                            <p><b>Alamat Lengkap:</b> <span id="profil-alamat">-</span></p>
-                            <p><b>Bank Tujuan:</b> <span id="profil-bank">-</span></p>
-                            <p><b>Nomor Rekening:</b> <span id="profil-rekening">-</span></p>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                        <h3 class="font-bold text-slate-900 text-sm border-b border-slate-100 pb-2">Informasi Profil Pribadi</h3>
+                        <div class="space-y-2 text-xs text-slate-600">
+                            <p class="flex justify-between border-b border-slate-50 pb-1.5"><span>Nama Lengkap:</span> <b class="text-slate-900" id="profil-nama">-</b></p>
+                            <p class="flex justify-between border-b border-slate-50 pb-1.5"><span>Username:</span> <b class="text-slate-900" id="profil-username">-</b></p>
+                            <p class="flex justify-between border-b border-slate-50 pb-1.5"><span>No KTP:</span> <b class="text-slate-900" id="profil-ktp">-</b></p>
+                            <p class="flex justify-between border-b border-slate-50 pb-1.5"><span>No WhatsApp:</span> <b class="text-slate-900" id="profil-wa">-</b></p>
+                            <p class="flex justify-between border-b border-slate-50 pb-1.5"><span>Alamat:</span> <b class="text-slate-900 text-right max-w-[200px]" id="profil-alamat">-</b></p>
+                            <p class="flex justify-between border-b border-slate-50 pb-1.5"><span>Bank Tujuan:</span> <b class="text-slate-900" id="profil-bank">-</b></p>
+                            <p class="flex justify-between pb-1"><span>No Rekening:</span> <b class="text-slate-900" id="profil-rekening">-</b></p>
                         </div>
                     </div>
-                    <button onclick="logout()" class="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-semibold text-xs shadow">Keluar / Logout Akun</button>
+                    <button onclick="logout()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-3 rounded-xl font-semibold text-xs border border-rose-200 transition shadow-sm">Keluar / Logout Akun</button>
                 </div>
             </div>
 
             <!-- NAVBAR BAWAH NASABAH -->
-            <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 flex justify-around p-2 shadow-lg z-40">
-                <button onclick="switchTabNasabah('pengajuan')" id="nav-nasabah-pengajuan" class="flex flex-col items-center text-blue-600 font-semibold text-[11px] w-1/3 py-1">
-                    <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Pengajuan
+            <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-md border-t border-slate-200/60 flex justify-around p-2 shadow-lg z-40">
+                <button onclick="switchTabNasabah('pengajuan')" id="nav-nasabah-pengajuan" class="flex flex-col items-center text-indigo-600 font-semibold text-[11px] w-1/3 py-1 transition">
+                    <span class="text-lg mb-0.5">📝</span> Pengajuan
                 </button>
-                <button onclick="switchTabNasabah('riwayat')" id="nav-nasabah-riwayat" class="flex flex-col items-center text-gray-400 text-[11px] w-1/3 py-1">
-                    <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                    Riwayat
+                <button onclick="switchTabNasabah('riwayat')" id="nav-nasabah-riwayat" class="flex flex-col items-center text-slate-400 font-medium text-[11px] w-1/3 py-1 transition">
+                    <span class="text-lg mb-0.5">📂</span> Riwayat
                 </button>
-                <button onclick="switchTabNasabah('akun')" id="nav-nasabah-akun" class="flex flex-col items-center text-gray-400 text-[11px] w-1/3 py-1">
-                    <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    Akun
+                <button onclick="switchTabNasabah('akun')" id="nav-nasabah-akun" class="flex flex-col items-center text-slate-400 font-medium text-[11px] w-1/3 py-1 transition">
+                    <span class="text-lg mb-0.5">⚙️</span> Akun
                 </button>
             </div>
         </div>
 
         <!-- DASHBOARD ADMIN -->
         <div id="view-admin" class="hidden flex flex-col justify-between min-h-screen">
-            <div class="bg-red-600 text-white p-4 flex justify-between items-center shadow">
-                <h2 class="font-bold text-sm">Panel Admin</h2>
-                <button onclick="logout()" class="text-xs bg-red-700 hover:bg-red-800 text-white px-3 py-1 rounded">Keluar</button>
+            <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-5 flex justify-between items-center shadow-md rounded-b-3xl">
+                <div>
+                    <h2 class="font-bold text-base">Panel Administrator</h2>
+                    <span class="text-[10px] bg-indigo-500/30 text-indigo-200 px-2.5 py-0.5 rounded-full border border-indigo-500/30">Kontrol Sistem</span>
+                </div>
+                <button onclick="logout()" class="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-xl font-medium transition">Keluar</button>
             </div>
 
             <div class="p-4 flex-grow space-y-4">
                 <div id="tab-admin-approve" class="space-y-3">
-                    <h3 class="font-bold text-gray-800 text-sm">Daftar Pengajuan Masuk & Pembayaran</h3>
+                    <h3 class="font-bold text-slate-900 text-sm">Daftar Pengajuan Masuk & Pembayaran</h3>
                     <div id="list-admin-loans" class="space-y-3 text-xs"></div>
                 </div>
 
                 <div id="tab-admin-jatuhtempo" class="hidden space-y-3">
-                    <h3 class="font-bold text-gray-800 text-sm">Nasabah Jatuh Tempo (H-7)</h3>
-                    <p class="text-[11px] text-gray-500">Daftar nasabah yang memiliki jadwal jatuh tempo dalam 7 hari ke depan atau sudah lewat.</p>
+                    <h3 class="font-bold text-slate-900 text-sm">Nasabah Jatuh Tempo (H-7)</h3>
+                    <p class="text-[11px] text-slate-500">Daftar nasabah yang mendekati batas waktu pembayaran atau sudah lewat.</p>
                     <div id="list-admin-jatuhtempo" class="space-y-3 text-xs"></div>
                 </div>
             </div>
 
-            <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 flex justify-around p-2 shadow-lg z-40">
-                <button onclick="switchTabAdmin('approve')" id="nav-admin-approve" class="flex flex-col items-center text-red-600 font-semibold text-[11px] w-1/2 py-1">
-                    <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Approve Pinjaman
+            <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-md border-t border-slate-200/60 flex justify-around p-2 shadow-lg z-40">
+                <button onclick="switchTabAdmin('approve')" id="nav-admin-approve" class="flex flex-col items-center text-indigo-600 font-semibold text-[11px] w-1/2 py-1 transition">
+                    <span class="text-lg mb-0.5">📊</span> Kelola Pinjaman
                 </button>
-                <button onclick="switchTabAdmin('jatuhtempo')" id="nav-admin-jatuhtempo" class="flex flex-col items-center text-gray-400 text-[11px] w-1/2 py-1">
-                    <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Jatuh Tempo (H-7)
+                <button onclick="switchTabAdmin('jatuhtempo')" id="nav-admin-jatuhtempo" class="flex flex-col items-center text-slate-400 font-medium text-[11px] w-1/2 py-1 transition">
+                    <span class="text-lg mb-0.5">⏰</span> Jatuh Tempo (H-7)
                 </button>
             </div>
         </div>
@@ -193,7 +225,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzI5SBZSdh-abtG5pj_9aLuecuZzApiy4ElwXTFyLQBJ5qJKOm8C9ci4b5xAtJQV1Bv0w/exec";
-        const ADMIN_WA = "628xxxxxxxxxx"; // Ganti nomor WA Admin
+        const ADMIN_WA = "628xxxxxxxxxx";
 
         function showLoading(text = "Sedang memproses...") {
             document.getElementById('loading-text').innerText = text;
@@ -219,11 +251,11 @@
             ['pengajuan', 'riwayat', 'akun'].forEach(t => {
                 document.getElementById('tab-nasabah-' + t).classList.add('hidden');
                 let navBtn = document.getElementById('nav-nasabah-' + t);
-                navBtn.className = "flex flex-col items-center text-gray-400 text-[11px] w-1/3 py-1";
+                navBtn.className = "flex flex-col items-center text-slate-400 font-medium text-[11px] w-1/3 py-1 transition";
             });
             document.getElementById('tab-nasabah-' + tabName).classList.remove('hidden');
             let activeNav = document.getElementById('nav-nasabah-' + tabName);
-            activeNav.className = "flex flex-col items-center text-blue-600 font-semibold text-[11px] w-1/3 py-1";
+            activeNav.className = "flex flex-col items-center text-indigo-600 font-semibold text-[11px] w-1/3 py-1 transition";
 
             if(tabName === 'riwayat') loadHistory();
         }
@@ -232,11 +264,11 @@
             ['approve', 'jatuhtempo'].forEach(t => {
                 document.getElementById('tab-admin-' + t).classList.add('hidden');
                 let navBtn = document.getElementById('nav-admin-' + t);
-                navBtn.className = "flex flex-col items-center text-gray-400 text-[11px] w-1/2 py-1";
+                navBtn.className = "flex flex-col items-center text-slate-400 font-medium text-[11px] w-1/2 py-1 transition";
             });
             document.getElementById('tab-admin-' + tabName).classList.remove('hidden');
             let activeNav = document.getElementById('nav-admin-' + tabName);
-            activeNav.className = "flex flex-col items-center text-red-600 font-semibold text-[11px] w-1/2 py-1";
+            activeNav.className = "flex flex-col items-center text-indigo-600 font-semibold text-[11px] w-1/2 py-1 transition";
 
             loadAdminData();
         }
@@ -252,11 +284,11 @@
 
             if (nominal >= 100000 && nominal <= 1000000 && fileInput.files.length > 0 && isChecked) {
                 btn.disabled = false;
-                btn.className = "w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold cursor-pointer transition-all duration-300 shadow-md";
+                btn.className = "w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-3 rounded-xl font-semibold cursor-pointer transition shadow-lg shadow-indigo-600/30";
                 btn.innerText = "Ajukan & Kirim ke WA Admin";
             } else {
                 btn.disabled = true;
-                btn.className = "w-full bg-gray-400 text-white py-2 rounded font-semibold cursor-not-allowed transition-all duration-300";
+                btn.className = "w-full bg-slate-200 text-slate-400 py-3 rounded-xl font-semibold cursor-not-allowed transition";
                 btn.innerText = "Lengkapi Data Untuk Mengajukan";
             }
         }
@@ -290,7 +322,7 @@
                 let tgl = new Date();
                 tgl.setMonth(tgl.getMonth() + i); 
                 let formatted = tgl.toLocaleDateString('id-ID', options);
-                htmlJadwal += `<li>Ke-${i}: <b class="text-blue-700">${formatted}</b></li>`;
+                htmlJadwal += `<li>Ke-${i}: <b class="text-indigo-700">${formatted}</b></li>`;
                 arrayJadwalString.push(`Ke-${i}: ${formatted}`);
             }
             htmlJadwal += "</ul>";
@@ -299,12 +331,11 @@
             globalJatuhTempoText = arrayJadwalString.join(", "); 
 
             document.getElementById('info-simulasi').innerHTML = `
-                <div>Estimasi Cicilan: <b class="text-blue-800">${globalCicilanText}</b></div>
+                <div>Estimasi Cicilan: <b class="text-indigo-900">${globalCicilanText}</b></div>
                 <div class="mt-1">Jadwal Jatuh Tempo: ${htmlJadwal}</div>
             `;
         }
 
-        // Handle Login
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             let u = document.getElementById('login-user').value;
@@ -328,7 +359,6 @@
             }
         });
 
-        // Handle Register dengan format alamat baru & No WhatsApp
         document.getElementById('form-register').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -340,7 +370,6 @@
             let kab = document.getElementById('reg-kab').value;
             let prov = document.getElementById('reg-prov').value;
 
-            // Menggabungkan alamat menjadi satu string rapi
             let alamatGabungan = `Kp. ${kp}, RT ${rt}/RW ${rw}, Desa/Kel. ${desa}, Kec. ${kec}, Kab/Kota ${kab}, Prov. ${prov}`;
 
             let data = {
@@ -368,7 +397,6 @@
             }
         });
 
-        // Handle Loan Application
         document.getElementById('form-loan').addEventListener('submit', async (e) => {
             e.preventDefault();
             let user = JSON.parse(localStorage.getItem('user'));
@@ -440,41 +468,48 @@
                 let isLunas = item.status === 'LUNAS';
                 let isVerifikasi = item.status.includes('Menunggu Verifikasi');
 
-                html += `<div class="p-3 border rounded bg-white space-y-1 shadow-sm">
-                    <p><b>ID:</b> ${item.id}</p>
-                    <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
-                    <p><b>Cicilan:</b> ${item.cicilanPerBulan}</p>
-                    <p><b>Jatuh Tempo:</b> ${item.jatuhTempo}</p>
-                    <p><b>Status:</b> <span class="px-2 py-0.5 rounded text-white ${isLunas ? 'bg-green-600 font-bold' : (isApproved ? 'bg-blue-500' : 'bg-yellow-500')}">${item.status}</span></p>
-                    ${item.fotoKtp ? `<p><b>KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Lihat di Drive</a></p>` : ''}
-                    ${item.buktiTf ? `<p><b>Pencairan Admin:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti Transfer Admin</a></p>` : ''}
-                    
-                    ${item.buktiBayar1 ? `<p><b>Bukti Bayar 1:</b> <a href="${item.buktiBayar1}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 1</a></p>` : ''}
-                    ${item.buktiBayar2 ? `<p><b>Bukti Bayar 2:</b> <a href="${item.buktiBayar2}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 2</a></p>` : ''}
-                    ${item.buktiBayar3 ? `<p><b>Bukti Bayar 3:</b> <a href="${item.buktiBayar3}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 3</a></p>` : ''}
+                let badgeColor = isLunas ? 'bg-emerald-600 text-white font-bold' : (isApproved ? 'bg-indigo-600 text-white' : 'bg-amber-500 text-white');
+
+                html += `<div class="p-4 border border-slate-100 rounded-2xl bg-white shadow-sm space-y-2">
+                    <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                        <span class="font-bold text-slate-900">${item.id}</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] ${badgeColor}">${item.status}</span>
+                    </div>
+                    <div class="space-y-1 text-slate-600">
+                        <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
+                        <p><b>Cicilan:</b> ${item.cicilanPerBulan}</p>
+                        <p><b>Jatuh Tempo:</b> ${item.jatuhTempo}</p>
+                    </div>
+                    <div class="pt-1 flex flex-wrap gap-2 text-xs">
+                        ${item.fotoKtp ? `<a href="${item.fotoKtp}" target="_blank" class="text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg font-medium">Lihat KTP</a>` : ''}
+                        ${item.buktiTf ? `<a href="${item.buktiTf}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-medium">Bukti Transfer Admin</a>` : ''}
+                        ${item.buktiBayar1 ? `<a href="${item.buktiBayar1}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-medium">Bayar 1</a>` : ''}
+                        ${item.buktiBayar2 ? `<a href="${item.buktiBayar2}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-medium">Bayar 2</a>` : ''}
+                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-medium">Bayar 3</a>` : ''}
+                    </div>
 
                     ${isApproved && !isLunas ? `
-                        <div class="mt-2 p-2 bg-blue-50 rounded border border-blue-200 space-y-2">
-                            <p class="font-bold text-blue-900 text-xs">Form Upload Pembayaran / Cicilan:</p>
-                            <select id="ket-bayar-${item.id}" class="w-full p-1 border rounded bg-white text-xs">
+                        <div class="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+                            <p class="font-bold text-slate-800 text-xs">Form Upload Pembayaran / Cicilan:</p>
+                            <select id="ket-bayar-${item.id}" class="w-full p-2 bg-white border border-slate-200 rounded-lg text-xs">
                                 <option value="Cicilan Ke-1">Cicilan Ke-1</option>
                                 <option value="Cicilan Ke-2">Cicilan Ke-2</option>
                                 <option value="Cicilan Ke-3">Cicilan Ke-3</option>
                                 <option value="Pelunasan Total">Pelunasan Total</option>
                             </select>
-                            <input type="file" id="file-bayar-${item.id}" accept="image/*" class="w-full p-1 border rounded bg-white text-xs">
-                            <button onclick="kirimPembayaran('${item.id}', '${item.nama}', '${item.noKtp}')" class="bg-green-600 hover:bg-green-700 text-white py-1.5 px-2 rounded font-semibold w-full text-xs">Kirim Bukti Bayar</button>
+                            <input type="file" id="file-bayar-${item.id}" accept="image/*" class="w-full p-1 bg-white border border-slate-200 rounded-lg text-xs">
+                            <button onclick="kirimPembayaran('${item.id}', '${item.nama}', '${item.noKtp}')" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-3 rounded-lg font-semibold w-full text-xs transition shadow-sm">Kirim Bukti Bayar</button>
                         </div>
                     ` : ''}
 
                     ${isVerifikasi ? `
-                        <div class="mt-2 p-2 bg-yellow-50 rounded border border-yellow-200 text-xs text-yellow-800 font-semibold text-center">
-                            ⏳ Pembayaran Anda sedang diperiksa admin. Mohon tunggu hingga diverifikasi sebelum mengunggah cicilan berikutnya.
+                        <div class="mt-2 p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800 font-medium text-center">
+                            ⏳ Pembayaran sedang diperiksa admin. Mohon tunggu verifikasi selesai.
                         </div>
                     ` : ''}
                 </div>`;
             });
-            document.getElementById('list-history').innerHTML = html || 'Belum ada riwayat pengajuan.';
+            document.getElementById('list-history').innerHTML = html || '<p class="text-center text-slate-400 py-6">Belum ada riwayat pengajuan.</p>';
         }
 
         async function loadAdminData() {
@@ -492,34 +527,39 @@
                 let isVerifikasi = item.status.includes('Menunggu Verifikasi');
                 let isLunas = item.status === 'LUNAS';
 
-                htmlApprove += `<div class="p-3 border rounded bg-white space-y-1 shadow-sm">
-                    <p><b>ID:</b> ${item.id} | <b>Nasabah:</b> ${item.nama}</p>
-                    <p><b>Rekening:</b> ${item.bank} - ${item.noRekening}</p>
-                    <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
-                    <p><b>Jatuh Tempo:</b> ${item.jatuhTempo}</p>
-                    <p><b>Foto KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Buka File KTP</a></p>
-                    <p><b>Status:</b> <span class="font-bold ${isLunas ? 'text-green-600' : 'text-blue-600'}">${item.status}</span></p>
-                    
-                    ${item.buktiBayar1 ? `<p class="text-xs"><b>Bukti 1:</b> <a href="${item.buktiBayar1}" target="_blank" class="text-blue-600 underline">Lihat</a></p>` : ''}
-                    ${item.buktiBayar2 ? `<p class="text-xs"><b>Bukti 2:</b> <a href="${item.buktiBayar2}" target="_blank" class="text-blue-600 underline">Lihat</a></p>` : ''}
-                    ${item.buktiBayar3 ? `<p class="text-xs"><b>Bukti 3:</b> <a href="${item.buktiBayar3}" target="_blank" class="text-blue-600 underline">Lihat</a></p>` : ''}
+                htmlApprove += `<div class="p-4 border border-slate-100 rounded-2xl bg-white shadow-sm space-y-2">
+                    <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                        <span class="font-bold text-slate-900">${item.id} - ${item.nama}</span>
+                        <span class="font-semibold ${isLunas ? 'text-emerald-600' : 'text-indigo-600'}">${item.status}</span>
+                    </div>
+                    <div class="space-y-1 text-slate-600 text-xs">
+                        <p><b>Rekening:</b> ${item.bank} - ${item.noRekening}</p>
+                        <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
+                        <p><b>Jatuh Tempo:</b> ${item.jatuhTempo}</p>
+                    </div>
+                    <div class="flex gap-2 text-xs pt-1">
+                        ${item.fotoKtp ? `<a href="${item.fotoKtp}" target="_blank" class="text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg font-medium">KTP</a>` : ''}
+                        ${item.buktiBayar1 ? `<a href="${item.buktiBayar1}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-medium">B1</a>` : ''}
+                        ${item.buktiBayar2 ? `<a href="${item.buktiBayar2}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-medium">B2</a>` : ''}
+                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg font-medium">B3</a>` : ''}
+                    </div>
 
                     ${isPending ? `
-                        <div class="mt-2 flex flex-col gap-2 p-2 bg-gray-50 rounded border">
-                            <label class="text-xs font-semibold text-gray-700">Upload Bukti Transfer Pencairan:</label>
-                            <input type="file" id="bukti-${item.id}" accept="image/*" class="w-full p-1 border rounded bg-white text-xs">
-                            <button onclick="approve('${item.id}', '${item.nama}', '${item.noKtp}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded font-semibold w-full transition">Approve & Transfer</button>
+                        <div class="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80 space-y-2">
+                            <label class="font-semibold text-slate-700 text-xs block">Upload Bukti Transfer Pencairan:</label>
+                            <input type="file" id="bukti-${item.id}" accept="image/*" class="w-full p-1 bg-white border border-slate-200 rounded-lg text-xs">
+                            <button onclick="approve('${item.id}', '${item.nama}', '${item.noKtp}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-semibold w-full transition shadow-sm">Approve & Transfer</button>
                         </div>
                     ` : ''}
 
                     ${isVerifikasi ? `
-                        <div class="mt-2 p-2 bg-yellow-50 rounded border border-yellow-200 space-y-2">
-                            <p class="font-bold text-yellow-900 text-xs">Nasabah Mengirim Bukti Bayar:</p>
-                            <button onclick="verifikasiBayar('${item.id}', '${item.status}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded font-semibold w-full text-xs">Verifikasi Pembayaran Ini</button>
+                        <div class="mt-3 p-3 bg-amber-50 rounded-xl border border-amber-200 space-y-2">
+                            <p class="font-bold text-amber-900 text-xs">Nasabah Mengirim Bukti Bayar</p>
+                            <button onclick="verifikasiBayar('${item.id}', '${item.status}')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg font-semibold w-full text-xs transition shadow-sm">Verifikasi Pembayaran Ini</button>
                         </div>
                     ` : ''}
 
-                    ${isLunas ? `<p class="text-green-600 font-bold mt-1">✓ LUNAS TOTAL</p>` : ''}
+                    ${isLunas ? `<p class="text-emerald-600 font-bold mt-1 text-xs">✓ LUNAS TOTAL</p>` : ''}
                 </div>`;
 
                 if (!isLunas && item.jatuhTempo) {
@@ -532,15 +572,14 @@
                             let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                             if (diffDays <= 7) {
-                                let statusWaktu = diffDays < 0 ? `<span class="text-red-600 font-bold">Terlambat ${Math.abs(diffDays)} hari</span>` : (diffDays === 0 ? `<span class="text-red-600 font-bold">Jatuh tempo HARI INI</span>` : `<span class="text-orange-500 font-semibold">Jatuh tempo dalam ${diffDays} hari</span>`);
+                                let statusWaktu = diffDays < 0 ? `<span class="text-rose-600 font-bold">Terlambat ${Math.abs(diffDays)} hari</span>` : (diffDays === 0 ? `<span class="text-rose-600 font-bold">Jatuh tempo HARI INI</span>` : `<span class="text-amber-600 font-semibold">Jatuh tempo dalam ${diffDays} hari</span>`);
 
-                                htmlJatuhTempo += `<div class="p-3 border rounded bg-orange-50 border-orange-200 space-y-1 shadow-sm">
-                                    <p><b>Nasabah:</b> ${item.nama}</p>
-                                    <p><b>ID Pinjaman:</b> ${item.id}</p>
-                                    <p><b>Jadwal:</b> ${part.trim()}</p>
-                                    <p><b>Status Waktu:</b> ${statusWaktu}</p>
-                                    <p><b>Nominal Cicilan:</b> ${item.cicilanPerBulan}</p>
-                                    <a href="https://wa.me/?text=Halo%20${encodeURIComponent(item.nama)},%20ini%20pengingat%20bahwa%20cicilan%20pinjaman%20Anda%20(${item.id})%20akan%20jatuh%20tempo%20pada%20${encodeURIComponent(dateString)}.%20Mohon%20segera%20lakukan%20pembayaran." target="_blank" class="block text-center mt-2 bg-green-600 hover:bg-green-700 text-white py-1.5 rounded font-semibold text-xs">Kirim Pengingat WhatsApp</a>
+                                htmlJatuhTempo += `<div class="p-4 border border-amber-100 rounded-2xl bg-amber-50/50 space-y-1.5 shadow-sm">
+                                    <p class="font-bold text-slate-900">${item.nama} (${item.id})</p>
+                                    <p class="text-slate-600"><b>Jadwal:</b> ${part.trim()}</p>
+                                    <p class="text-slate-600"><b>Status:</b> ${statusWaktu}</p>
+                                    <p class="text-slate-600"><b>Cicilan:</b> ${item.cicilanPerBulan}</p>
+                                    <a href="https://wa.me/?text=Halo%20${encodeURIComponent(item.nama)},%20ini%20pengingat%20bahwa%20cicilan%20pinjaman%20Anda%20(${item.id})%20akan%20jatuh%20tempo%20pada%20${encodeURIComponent(dateString)}.%20Mohon%20segera%20lakukan%20pembayaran." target="_blank" class="block text-center mt-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl font-semibold text-xs shadow-sm transition">Kirim Pengingat WhatsApp</a>
                                 </div>`;
                             }
                         }
@@ -548,8 +587,8 @@
                 }
             });
 
-            document.getElementById('list-admin-loans').innerHTML = htmlApprove || 'Tidak ada pengajuan masuk.';
-            document.getElementById('list-admin-jatuhtempo').innerHTML = htmlJatuhTempo || 'Tidak ada nasabah yang mendekati jatuh tempo (H-7).';
+            document.getElementById('list-admin-loans').innerHTML = htmlApprove || '<p class="text-center text-slate-400 py-6">Tidak ada pengajuan masuk.</p>';
+            document.getElementById('list-admin-jatuhtempo').innerHTML = htmlJatuhTempo || '<p class="text-center text-slate-400 py-6">Tidak ada nasabah mendekati jatuh tempo (H-7).</p>';
         }
 
         async function verifikasiBayar(id, statusString) {
@@ -594,7 +633,7 @@
                 if (ketSelect.includes("Ke-2")) tempoNum = "2";
                 else if (ketSelect.includes("Ke-3") || ketSelect.includes("Pelunasan")) tempoNum = "3";
 
-                let customFileName = `BUKTI BAYAR - ${cleanNama} - ${noKtpNasabah} - TEMPO ${tempoNum}.${ext}`;
+                let customFileName = `BUKTI BAYAR - ${cleanNama} - ${noKtpNasaband} - TEMPO ${tempoNum}.${ext}`.replace('and', '');
 
                 let payload = {
                     action: 'submitPayment',
