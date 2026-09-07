@@ -8,10 +8,8 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- Container Utama -->
     <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-lg p-6 flex flex-col justify-between">
         
-        <!-- BAGIAN LOGIN -->
         <div id="view-login" class="space-y-4 my-auto">
             <h1 class="text-2xl font-bold text-center text-blue-600">Pinjaman Kilat Mikro</h1>
             <p class="text-xs text-center text-gray-500">Silakan login atau daftar untuk mengajukan pinjaman.</p>
@@ -23,7 +21,6 @@
             <button onclick="switchView('register')" class="w-full text-center text-sm text-blue-500 mt-2">Belum punya akun? Daftar</button>
         </div>
 
-        <!-- BAGIAN REGISTER -->
         <div id="view-register" class="hidden space-y-3 my-auto">
             <h1 class="text-xl font-bold text-center text-blue-600">Daftar Akun Baru</h1>
             <form id="form-register" class="space-y-2 text-sm">
@@ -39,7 +36,6 @@
             <button onclick="switchView('login')" class="w-full text-center text-sm text-gray-500 mt-2">Kembali ke Login</button>
         </div>
 
-        <!-- BAGIAN DASHBOARD NASABAH -->
         <div id="view-nasabah" class="hidden space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
                 <div>
@@ -53,26 +49,27 @@
                 <h3 class="font-bold text-blue-900 text-sm">Form Pengajuan Pinjaman</h3>
                 <form id="form-loan" class="space-y-2 text-sm">
                     <div>
-                        <label class="text-xs text-gray-600">Nominal Pinjaman (Rp100rb - Rp1jt)</label>
-                        <select id="loan-nominal" class="w-full p-2 border rounded bg-white">
-                            <option value="100000">Rp100.000</option>
-                            <option value="500000">Rp500.000</option>
-                            <option value="1000000">Rp1.000.000</option>
-                        </select>
+                        <label class="text-xs text-gray-600">Nominal Pinjaman (Maksimal Rp1.000.000)</label>
+                        <input type="number" id="loan-nominal" placeholder="Contoh: 500000 atau 1000000" max="1000000" min="100000" required class="w-full p-2 border rounded bg-white" oninput="hitungCicilan()">
                     </div>
                     <div>
-                        <label class="text-xs text-gray-600">Tenor / Jangka Waktu</label>
-                        <select id="loan-tenor" class="w-full p-2 border rounded bg-white">
-                            <option value="1 Bulan">1 Bulan</option>
-                            <option value="2 Bulan">2 Bulan</option>
-                            <option value="3 Bulan">3 Bulan (Cicilan Rp390rb/bln)</option>
+                        <label class="text-xs text-gray-600">Pilih Tenor / Jangka Waktu</label>
+                        <select id="loan-tenor" class="w-full p-2 border rounded bg-white" onchange="hitungCicilan()">
+                            <option value="1">1 Bulan</option>
+                            <option value="2">2 Bulan</option>
+                            <option value="3" selected>3 Bulan</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="text-xs text-gray-600">Foto KTP (Link Gambar / GDrive)</label>
-                        <input type="text" id="loan-foto" placeholder="Tempel link foto KTP di sini" required class="w-full p-2 border rounded bg-white">
+                    
+                    <div id="info-cicilan" class="bg-white p-2.5 rounded border border-blue-200 text-xs text-blue-800 font-semibold">
+                        Estimasi Cicilan: Rp0 / bulan
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-semibold">Ajukan & Kirim ke WA Admin</button>
+
+                    <div>
+                        <label class="text-xs text-gray-600">Upload Foto KTP (JPG/PNG)</label>
+                        <input type="file" id="loan-foto-file" accept="image/*" required class="w-full p-1 border rounded bg-white text-xs">
+                    </div>
+                    <button type="submit" id="btn-submit-loan" class="w-full bg-blue-600 text-white py-2 rounded font-semibold">Ajukan & Kirim ke WA Admin</button>
                 </form>
             </div>
 
@@ -82,7 +79,6 @@
             </div>
         </div>
 
-        <!-- BAGIAN DASHBOARD ADMIN -->
         <div id="view-admin" class="hidden space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
                 <h2 class="font-bold text-lg text-red-600">Panel Admin</h2>
@@ -97,8 +93,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjOgNehCPuHQAbqgfosE51pIPPDCHP7kiGquHhtr_GSAb9Uij0CaAxhtinXqb_pOE-fQ/exec";
-        const ADMIN_WA = "6285891503495"; // Ganti dengan nomor WhatsApp Admin (awali 62)
+        const SCRIPT_URL = "MASUKKAN_WEB_APP_URL_GAS_DISINI";
+        const ADMIN_WA = "628xxxxxxxxxx"; // Ganti dengan nomor WhatsApp Admin (awali dengan 62)
 
         function switchView(viewId) {
             ['login', 'register', 'nasabah', 'admin'].forEach(v => {
@@ -107,11 +103,35 @@
             document.getElementById('view-' + viewId).classList.remove('hidden');
         }
 
+        // Fungsi Kalkulator Otomatis Cicilan Bulanan
+        function hitungCicilan() {
+            let nominal = parseFloat(document.getElementById('loan-nominal').value) || 0;
+            let tenorBulan = parseInt(document.getElementById('loan-tenor').value) || 1;
+            
+            if (nominal > 1000000) {
+                alert("Maksimal pinjaman adalah Rp1.000.000!");
+                document.getElementById('loan-nominal').value = 1000000;
+                nominal = 1000000;
+            }
+
+            // Simulasi Bunga ~5.6% flat per bulan dari pokok (Total 17% untuk 3 bulan atau proporsional)
+            // Menggunakan skema total pelunasan total = Pokok + (Pokok * 0.0567 * tenor)
+            let totalBungaPersen = tenorBulan === 3 ? 0.17 : (tenorBulan === 2 ? 0.11 : 0.06);
+            let totalPengembalian = nominal + (nominal * totalBungaPersen);
+            let cicilanPerBulan = Math.ceil(totalPengembalian / tenorBulan);
+
+            if (nominal <= 0) {
+                document.getElementById('info-cicilan').innerText = "Estimasi Cicilan: Rp0 / bulan";
+            } else {
+                document.getElementById('info-cicilan').innerHTML = `Estimasi Cicilan: <b>Rp${cicilanPerBulan.toLocaleString('id-ID')} / bulan</b> (Total: Rp${totalPengembalian.toLocaleString('id-ID')})`;
+            }
+        }
+
         // Handle Login
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const u = document.getElementById('login-user').value;
-            const p = document.getElementById('login-pass').value;
+            let u = document.getElementById('login-user').value;
+            let p = document.getElementById('login-pass').value;
             
             let res = await fetch(`${SCRIPT_URL}?action=login&username=${u}&password=${p}`);
             let json = await res.json();
@@ -144,37 +164,70 @@
             if(json.status === 'success') switchView('login');
         });
 
-        // Handle Loan Application
+        // Handle Loan Application & Upload File KTP
         document.getElementById('form-loan').addEventListener('submit', async (e) => {
             e.preventDefault();
             let user = JSON.parse(localStorage.getItem('user'));
             let nominal = document.getElementById('loan-nominal').value;
-            let tenor = document.getElementById('loan-tenor').value;
-            let foto = document.getElementById('loan-foto').value;
+            let tenorBulan = document.getElementById('loan-tenor').value;
+            let fileInput = document.getElementById('loan-foto-file');
 
-            // Ambil detail data lengkap user dari form/storage jika perlu, tapi di backend sudah tersimpan saat register
-            let data = {
-                action: 'applyLoan',
-                username: user.username,
-                namaLengkap: user.nama || user.username,
-                noKtp: "-",
-                alamat: "-",
-                fotoKtp: foto,
-                bank: "-",
-                noRekening: "-",
-                nominal: nominal,
-                tenor: tenor
+            if (nominal > 1000000) {
+                return alert("Maksimal pinjaman Rp1.000.000");
+            }
+
+            if (fileInput.files.length === 0) {
+                return alert("Silakan pilih foto KTP terlebih dahulu!");
+            }
+
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+
+            document.getElementById('btn-submit-loan').innerText = "Sedang Mengunggah KTP...";
+            document.getElementById('btn-submit-loan').disabled = true;
+
+            reader.onload = async function () {
+                let base64Data = reader.result;
+                // Format Nama File GDrive otomatis: NamaLengkap-NoKTP.ext
+                let cleanNama = user.nama.replace(/[^a-zA-Z0-9]/g, '_');
+                let ext = file.name.split('.').pop();
+                let customFileName = `${cleanNama}-${user.noKtp}.${ext}`;
+
+                let payload = {
+                    action: 'applyLoan',
+                    username: user.username,
+                    namaLengkap: user.nama,
+                    noKtp: user.noKtp,
+                    alamat: user.alamat,
+                    bank: user.bank,
+                    noRekening: user.noRekening,
+                    nominal: nominal,
+                    tenor: `${tenorBulan} Bulan`,
+                    fileData: base64Data,
+                    fileName: customFileName,
+                    fileMime: file.type
+                };
+
+                try {
+                    let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                    let json = await res.json();
+                    
+                    if(json.status === 'success') {
+                        alert("Pengajuan Berhasil & KTP Berhasil Disimpan!");
+                        let waMessage = `Halo Admin, saya ${user.nama} (${user.username}) mengajukan pinjaman Rp${Number(nominal).toLocaleString()} tenor ${tenorBulan} Bulan. Mohon diproses ya. ID: ${json.loanId}`;
+                        window.location.href = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMessage)}`;
+                    } else {
+                        alert("Gagal: " + json.message);
+                    }
+                } catch(err) {
+                    alert("Terjadi kesalahan jaringan.");
+                } finally {
+                    document.getElementById('btn-submit-loan').innerText = "Ajukan & Kirim ke WA Admin";
+                    document.getElementById('btn-submit-loan').disabled = false;
+                }
             };
 
-            let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-            let json = await res.json();
-            
-            if(json.status === 'success') {
-                alert("Pengajuan Berhasil Disimpan!");
-                // Redirect otomatis ke WhatsApp Admin
-                let waMessage = `Halo Admin, saya ${user.username} telah mengajukan pinjaman sebesar Rp${Number(nominal).toLocaleString()} dengan tenor ${tenor}. Mohon diproses ya. ID: ${json.loanId}`;
-                window.location.href = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMessage)}`;
-            }
+            reader.readAsDataURL(file);
         });
 
         async function loadHistory() {
@@ -189,7 +242,8 @@
                         <p><b>ID:</b> ${item.id}</p>
                         <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
                         <p><b>Status:</b> <span class="px-2 py-0.5 rounded text-white ${item.status === 'Approved' ? 'bg-green-500' : 'bg-yellow-500'}">${item.status}</span></p>
-                        ${item.buktiTf ? `<p><b>Bukti TF:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti</a></p>` : ''}
+                        ${item.fotoKtp ? `<p><b>KTP Terunggah:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Lihat KTP di Drive</a></p>` : ''}
+                        ${item.buktiTf ? `<p><b>Bukti TF Admin:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti Transfer</a></p>` : ''}
                     </div>`;
                 });
                 document.getElementById('list-history').innerHTML = html || 'Belum ada riwayat.';
@@ -197,14 +251,15 @@
                 let html = '';
                 json.data.forEach(item => {
                     html += `<div class="p-3 border rounded bg-white space-y-1">
-                        <p><b>ID:</b> ${item.id} | <b>User:</b> ${item.username} (${item.nama})</p>
+                        <p><b>ID:</b> ${item.id} | <b>Nasabah:</b> ${item.nama} (${item.username})</p>
+                        <p><b>No KTP:</b> ${item.noKtp} | <b>Alamat:</b> ${item.alamat}</p>
                         <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
                         <p><b>Rekening:</b> ${item.bank} - ${item.noRekening}</p>
-                        <p><b>KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Link KTP</a></p>
+                        <p><b>Foto KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Buka File KTP di GDrive</a></p>
                         <p><b>Status:</b> <b>${item.status}</b></p>
                         ${item.status === 'Pending' ? `
                             <div class="mt-2 flex gap-2">
-                                <input type="text" id="bukti-${item.id}" placeholder="Link Bukti Transfer" class="p-1 border rounded w-full">
+                                <input type="text" id="bukti-${item.id}" placeholder="Link Bukti Transfer Admin" class="p-1 border rounded w-full">
                                 <button onclick="approve('${item.id}')" class="bg-green-600 text-white px-3 py-1 rounded">Approve</button>
                             </div>
                         ` : `<p class="text-green-600 font-semibold">Sudah Ditransfer</p>`}
@@ -240,7 +295,7 @@
                 switchView('admin');
             } else {
                 switchView('nasabah');
-                document.getElementById('welcome-user').innerText = `Halo, ${data.username}`;
+                document.getElementById('welcome-user').innerText = `Halo, ${data.nama}`;
             }
             loadHistory();
         }
