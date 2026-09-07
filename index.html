@@ -76,7 +76,7 @@
                     <input type="text" id="reg-nama" placeholder="Nama lengkap" required class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
                 <div>
-                    <label class="font-semibold text-slate-600 mb-1 block">Nomor KTP (16 Digit)</label>
+                    <label class="font-semibold text-slate-600 mb-1 block">Nomor KTP (16 Digit - Kunci Utama)</label>
                     <input type="text" id="reg-ktp" placeholder="320xxxxxxxxxxxxx" required class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
                 <div>
@@ -141,6 +141,26 @@
                                 </select>
                             </div>
                             
+                            <!-- KONFIRMASI REKENING -->
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+                                <label class="font-semibold text-slate-700 block">Konfirmasi Rekening Pencairan:</label>
+                                <div class="text-[11px] text-slate-600 bg-white p-2 rounded-lg border border-slate-200">
+                                    Bank: <b id="conf-bank-txt">-</b> | No. Rek: <b id="conf-rek-txt">-</b>
+                                </div>
+                                <div class="flex gap-2 pt-1">
+                                    <button type="button" onclick="ubahRekening(false)" id="btn-rek-benar" class="w-1/2 bg-emerald-600 text-white py-1.5 rounded-lg font-semibold transition text-center">Benar</button>
+                                    <button type="button" onclick="ubahRekening(true)" id="btn-rek-salah" class="w-1/2 bg-rose-500 text-white py-1.5 rounded-lg font-semibold transition text-center">Salah / Ubah</button>
+                                </div>
+                            </div>
+
+                            <!-- INPUT REKENING BARU (MUNCUL JIKA KLIK SALAH) -->
+                            <div id="container-ubah-rekening" class="hidden bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
+                                <label class="font-bold text-amber-900 block">Masukkan Data Rekening Baru:</label>
+                                <input type="text" id="new-bank" placeholder="Nama Bank Baru (BCA/BRI/dll)" class="w-full p-2 bg-white border border-slate-200 rounded-lg text-xs">
+                                <input type="text" id="new-rekening" placeholder="Nomor Rekening Baru" class="w-full p-2 bg-white border border-slate-200 rounded-lg text-xs">
+                                <button type="button" onclick="simpanRekeningBaru()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-1.5 rounded-lg font-semibold text-xs transition">Simpan Rekening Baru</button>
+                            </div>
+
                             <div id="info-simulasi" class="bg-indigo-50/70 p-2.5 rounded-xl border border-indigo-100 text-indigo-950 space-y-1">
                                 <div>Estimasi Cicilan: <b>Rp0 / bulan</b></div>
                                 <div>Jadwal Jatuh Tempo: <b>-</b></div>
@@ -193,7 +213,7 @@
             </div>
 
             <!-- NAVBAR BAWAH TETAP -->
-            <div class="bg-white/95 backdrop-blur-md border-t border-slate-200/60 flex-shrink-0 flex justify-around p-2 shadow-lg z-20">
+            <div class="bg-white/95 backdrop-blur-md border-t border-slate-200/60 flex-shrink-0 flex justify-around p-2 shadow-lg z-40">
                 <button onclick="switchTabNasabah('pengajuan')" id="nav-nasabah-pengajuan" class="flex flex-col items-center text-indigo-600 font-semibold text-[10px] w-1/3 py-1 transition">
                     <span class="text-base mb-0.5">📝</span> Pengajuan
                 </button>
@@ -320,6 +340,64 @@
                 btn.disabled = true;
                 btn.className = "w-full bg-slate-200 text-slate-400 py-2.5 rounded-xl font-semibold cursor-not-allowed transition text-xs";
                 btn.innerText = "Lengkapi Data Untuk Mengajukan";
+            }
+        }
+
+        function ubahRekening(isSalah) {
+            let container = document.getElementById('container-ubah-rekening');
+            let btnBenar = document.getElementById('btn-rek-benar');
+            let btnSalah = document.getElementById('btn-rek-salah');
+
+            if (isSalah) {
+                container.classList.remove('hidden');
+                btnSalah.className = "w-1/2 bg-rose-600 text-white py-1.5 rounded-lg font-semibold transition text-center ring-2 ring-rose-300";
+                btnBenar.className = "w-1/2 bg-slate-300 text-slate-700 py-1.5 rounded-lg font-semibold transition text-center";
+            } else {
+                container.classList.add('hidden');
+                btnBenar.className = "w-1/2 bg-emerald-600 text-white py-1.5 rounded-lg font-semibold transition text-center ring-2 ring-emerald-300";
+                btnSalah.className = "w-1/2 bg-slate-300 text-slate-700 py-1.5 rounded-lg font-semibold transition text-center";
+            }
+        }
+
+        async function simpanRekeningBaru() {
+            let user = JSON.parse(localStorage.getItem('user'));
+            let newBank = document.getElementById('new-bank').value.trim();
+            let newRek = document.getElementById('new-rekening').value.trim();
+
+            if(!newBank || !newRek) {
+                return alert("Nama bank dan nomor rekening baru harus diisi!");
+            }
+
+            showLoading("Memperbarui rekening...");
+            try {
+                let payload = {
+                    action: 'updateRekening',
+                    username: user.username,
+                    noKtp: user.noKtp,
+                    bank: newBank,
+                    noRekening: newRek
+                };
+                let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                let json = await res.json();
+                
+                alert(json.message);
+                if(json.status === 'success') {
+                    user.bank = newBank;
+                    user.noRekening = newRek;
+                    localStorage.setItem('user', JSON.stringify(user));
+                    
+                    document.getElementById('conf-bank-txt').innerText = newBank;
+                    document.getElementById('conf-rek-txt').innerText = newRek;
+                    document.getElementById('profil-bank').innerText = newBank;
+                    document.getElementById('profil-rekening').innerText = newRek;
+                    
+                    document.getElementById('container-ubah-rekening').classList.add('hidden');
+                    ubahRekening(false);
+                }
+            } catch(err) {
+                alert("Kesalahan jaringan.");
+            } finally {
+                hideLoading();
             }
         }
 
@@ -754,6 +832,10 @@
                 document.getElementById('profil-alamat').innerText = data.alamat;
                 document.getElementById('profil-bank').innerText = data.bank;
                 document.getElementById('profil-rekening').innerText = data.noRekening;
+
+                // Set teks konfirmasi rekening di form pengajuan
+                document.getElementById('conf-bank-txt').innerText = data.bank || "-";
+                document.getElementById('conf-rek-txt').innerText = data.noRekening || "-";
 
                 switchTabNasabah('pengajuan');
                 checkFormValidity();
