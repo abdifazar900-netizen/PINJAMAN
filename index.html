@@ -10,6 +10,7 @@
 
     <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-lg p-6 flex flex-col justify-between">
         
+        <!-- BAGIAN LOGIN -->
         <div id="view-login" class="space-y-4 my-auto">
             <h1 class="text-2xl font-bold text-center text-blue-600">Pinjaman Kilat Mikro</h1>
             <p class="text-xs text-center text-gray-500">Silakan login atau daftar untuk mengajukan pinjaman.</p>
@@ -21,6 +22,7 @@
             <button onclick="switchView('register')" class="w-full text-center text-sm text-blue-500 mt-2">Belum punya akun? Daftar</button>
         </div>
 
+        <!-- BAGIAN REGISTER -->
         <div id="view-register" class="hidden space-y-3 my-auto">
             <h1 class="text-xl font-bold text-center text-blue-600">Daftar Akun Baru</h1>
             <form id="form-register" class="space-y-2 text-sm">
@@ -36,6 +38,7 @@
             <button onclick="switchView('login')" class="w-full text-center text-sm text-gray-500 mt-2">Kembali ke Login</button>
         </div>
 
+        <!-- BAGIAN DASHBOARD NASABAH -->
         <div id="view-nasabah" class="hidden space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
                 <div>
@@ -50,25 +53,45 @@
                 <form id="form-loan" class="space-y-2 text-sm">
                     <div>
                         <label class="text-xs text-gray-600">Nominal Pinjaman (Maksimal Rp1.000.000)</label>
-                        <input type="number" id="loan-nominal" placeholder="Contoh: 500000 atau 1000000" max="1000000" min="100000" required class="w-full p-2 border rounded bg-white" oninput="hitungCicilan()">
+                        <input type="number" id="loan-nominal" placeholder="Contoh: 500000" max="1000000" min="100000" required class="w-full p-2 border rounded bg-white" oninput="hitungSimulasi()">
                     </div>
                     <div>
                         <label class="text-xs text-gray-600">Pilih Tenor / Jangka Waktu</label>
-                        <select id="loan-tenor" class="w-full p-2 border rounded bg-white" onchange="hitungCicilan()">
+                        <select id="loan-tenor" class="w-full p-2 border rounded bg-white" onchange="hitungSimulasi()">
                             <option value="1">1 Bulan</option>
                             <option value="2">2 Bulan</option>
                             <option value="3" selected>3 Bulan</option>
                         </select>
                     </div>
                     
-                    <div id="info-cicilan" class="bg-white p-2.5 rounded border border-blue-200 text-xs text-blue-800 font-semibold">
-                        Estimasi Cicilan: Rp0 / bulan
+                    <!-- Kotak Info Kalkulasi Cicilan & Jatuh Tempo -->
+                    <div id="info-simulasi" class="bg-white p-2.5 rounded border border-blue-200 text-xs text-blue-900 space-y-1">
+                        <div>Estimasi Cicilan: <b>Rp0 / bulan</b></div>
+                        <div>Tanggal Jatuh Tempo: <b>-</b></div>
                     </div>
 
-                    <div>
-                        <label class="text-xs text-gray-600">Upload Foto KTP (JPG/PNG)</label>
-                        <input type="file" id="loan-foto-file" accept="image/*" required class="w-full p-1 border rounded bg-white text-xs">
+                    <!-- Pilihan Sumber Foto KTP (Kamera Langsung atau File/Galeri) -->
+                    <div class="space-y-1">
+                        <label class="text-xs text-gray-600">Foto KTP (Pilih Kamera Langsung atau Galeri)</label>
+                        <div class="flex gap-2">
+                            <input type="file" id="loan-foto-file" accept="image/*" capture="environment" required class="w-full p-1 border rounded bg-white text-xs">
+                        </div>
+                        <p class="text-[10px] text-gray-500">*Jika pakai HP, klik akan otomatis menawarkan buka Kamera atau Galeri.</p>
                     </div>
+
+                    <!-- Kotak Perjanjian & Syarat Ketentuan -->
+                    <div class="bg-gray-100 p-2.5 rounded border text-[11px] text-gray-600 space-y-1 max-h-28 overflow-y-auto">
+                        <p class="font-bold text-gray-800">Perjanjian & Ketentuan Pinjaman:</p>
+                        <p>1. Saya menyatakan data diri dan nomor rekening yang diberikan adalah benar.</p>
+                        <p>2. Saya sanggup melunasi cicilan tepat waktu sesuai jadwal jatuh tempo yang tertera.</p>
+                        <p>3. Keterlambatan pembayaran dapat berdampak pada penghentian fasilitas pinjaman selanjutnya.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                        <input type="checkbox" id="check-setuju" required class="w-4 h-4 text-blue-600 rounded">
+                        <label for="check-setuju" class="text-xs font-semibold text-gray-700">Saya menyetujui ketentuan perjanjian pinjaman di atas</label>
+                    </div>
+
                     <button type="submit" id="btn-submit-loan" class="w-full bg-blue-600 text-white py-2 rounded font-semibold">Ajukan & Kirim ke WA Admin</button>
                 </form>
             </div>
@@ -79,6 +102,7 @@
             </div>
         </div>
 
+        <!-- BAGIAN DASHBOARD ADMIN -->
         <div id="view-admin" class="hidden space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
                 <h2 class="font-bold text-lg text-red-600">Panel Admin</h2>
@@ -94,7 +118,7 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjOgNehCPuHQAbqgfosE51pIPPDCHP7kiGquHhtr_GSAb9Uij0CaAxhtinXqb_pOE-fQ/exec";
-        const ADMIN_WA = "628xxxxxxxxxx"; // Ganti dengan nomor WhatsApp Admin (awali dengan 62)
+        const ADMIN_WA = "628xxxxxxxxxx"; // Ganti nomor WhatsApp Admin (awali 62)
 
         function switchView(viewId) {
             ['login', 'register', 'nasabah', 'admin'].forEach(v => {
@@ -103,8 +127,11 @@
             document.getElementById('view-' + viewId).classList.remove('hidden');
         }
 
-        // Fungsi Kalkulator Otomatis Cicilan Bulanan
-        function hitungCicilan() {
+        let globalCicilanText = "";
+        let globalJatuhTempoText = "";
+
+        // Fungsi Kalkulator Otomatis Cicilan & Tanggal Jatuh Tempo
+        function hitungSimulasi() {
             let nominal = parseFloat(document.getElementById('loan-nominal').value) || 0;
             let tenorBulan = parseInt(document.getElementById('loan-tenor').value) || 1;
             
@@ -114,16 +141,29 @@
                 nominal = 1000000;
             }
 
-            // Simulasi Bunga ~5.6% flat per bulan dari pokok (Total 17% untuk 3 bulan atau proporsional)
-            // Menggunakan skema total pelunasan total = Pokok + (Pokok * 0.0567 * tenor)
+            // Simulasi Bunga ~5.6% flat per bulan
             let totalBungaPersen = tenorBulan === 3 ? 0.17 : (tenorBulan === 2 ? 0.11 : 0.06);
             let totalPengembalian = nominal + (nominal * totalBungaPersen);
             let cicilanPerBulan = Math.ceil(totalPengembalian / tenorBulan);
 
+            // Hitung Tanggal Jatuh Tempo Akhir (Hari ini + Tenor Bulan)
+            let tglJatuhTempo = new Date();
+            tglJatuhTempo.setMonth(tglJatuhTempo.getMonth() + tenorBulan);
+            let options = { day: 'numeric', month: 'long', year: 'numeric' };
+            let formattedJatuhTempo = tglJatuhTempo.toLocaleDateString('id-ID', options);
+
             if (nominal <= 0) {
-                document.getElementById('info-cicilan').innerText = "Estimasi Cicilan: Rp0 / bulan";
+                document.getElementById('info-simulasi').innerHTML = `Estimasi Cicilan: <b>Rp0 / bulan</b><br>Tanggal Jatuh Tempo: <b>-</b>`;
+                globalCicilanText = "";
+                globalJatuhTempoText = "";
             } else {
-                document.getElementById('info-cicilan').innerHTML = `Estimasi Cicilan: <b>Rp${cicilanPerBulan.toLocaleString('id-ID')} / bulan</b> (Total: Rp${totalPengembalian.toLocaleString('id-ID')})`;
+                globalCicilanText = `Rp${cicilanPerBulan.toLocaleString('id-ID')} / bulan (Total: Rp${totalPengembalian.toLocaleString('id-ID')})`;
+                globalJatuhTempoText = formattedJatuhTempo;
+
+                document.getElementById('info-simulasi').innerHTML = `
+                    <div>Estimasi Cicilan: <b>${globalCicilanText}</b></div>
+                    <div>Tanggal Jatuh Tempo Akhir: <b class="text-blue-700">${globalJatuhTempoText}</b></div>
+                `;
             }
         }
 
@@ -164,20 +204,25 @@
             if(json.status === 'success') switchView('login');
         });
 
-        // Handle Loan Application & Upload File KTP
+        // Handle Loan Application & Upload KTP
         document.getElementById('form-loan').addEventListener('submit', async (e) => {
             e.preventDefault();
             let user = JSON.parse(localStorage.getItem('user'));
             let nominal = document.getElementById('loan-nominal').value;
             let tenorBulan = document.getElementById('loan-tenor').value;
             let fileInput = document.getElementById('loan-foto-file');
+            let isChecked = document.getElementById('check-setuju').checked;
+
+            if (!isChecked) {
+                return alert("Anda harus mencentang persetujuan syarat dan ketentuan terlebih dahulu!");
+            }
 
             if (nominal > 1000000) {
                 return alert("Maksimal pinjaman Rp1.000.000");
             }
 
             if (fileInput.files.length === 0) {
-                return alert("Silakan pilih foto KTP terlebih dahulu!");
+                return alert("Silakan ambil atau pilih foto KTP terlebih dahulu!");
             }
 
             let file = fileInput.files[0];
@@ -188,7 +233,6 @@
 
             reader.onload = async function () {
                 let base64Data = reader.result;
-                // Format Nama File GDrive otomatis: NamaLengkap-NoKTP.ext
                 let cleanNama = user.nama.replace(/[^a-zA-Z0-9]/g, '_');
                 let ext = file.name.split('.').pop();
                 let customFileName = `${cleanNama}-${user.noKtp}.${ext}`;
@@ -203,6 +247,8 @@
                     noRekening: user.noRekening,
                     nominal: nominal,
                     tenor: `${tenorBulan} Bulan`,
+                    cicilanPerBulan: globalCicilanText,
+                    jatuhTempo: globalJatuhTempoText,
                     fileData: base64Data,
                     fileName: customFileName,
                     fileMime: file.type
@@ -213,8 +259,8 @@
                     let json = await res.json();
                     
                     if(json.status === 'success') {
-                        alert("Pengajuan Berhasil & KTP Berhasil Disimpan!");
-                        let waMessage = `Halo Admin, saya ${user.nama} (${user.username}) mengajukan pinjaman Rp${Number(nominal).toLocaleString()} tenor ${tenorBulan} Bulan. Mohon diproses ya. ID: ${json.loanId}`;
+                        alert("Pengajuan Berhasil Disimpan!");
+                        let waMessage = `Halo Admin, saya ${user.nama} (${user.username}) mengajukan pinjaman Rp${Number(nominal).toLocaleString()} tenor ${tenorBulan} Bulan. Cicilan: ${globalCicilanText}. Jatuh tempo akhir: ${globalJatuhTempoText}. Mohon diproses ya. ID: ${json.loanId}`;
                         window.location.href = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMessage)}`;
                     } else {
                         alert("Gagal: " + json.message);
@@ -223,7 +269,7 @@
                     alert("Terjadi kesalahan jaringan.");
                 } finally {
                     document.getElementById('btn-submit-loan').innerText = "Ajukan & Kirim ke WA Admin";
-                    document.getElementById('btn-submit-loan').disabled = false;
+                    document.getElementById('btn-submit-loan'].disabled = false;
                 }
             };
 
@@ -241,9 +287,11 @@
                     html += `<div class="p-3 border rounded bg-white space-y-1">
                         <p><b>ID:</b> ${item.id}</p>
                         <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
+                        <p><b>Cicilan:</b> ${item.cicilanPerBulan}</p>
+                        <p><b>Jatuh Tempo:</b> ${item.jatuhTempo}</p>
                         <p><b>Status:</b> <span class="px-2 py-0.5 rounded text-white ${item.status === 'Approved' ? 'bg-green-500' : 'bg-yellow-500'}">${item.status}</span></p>
-                        ${item.fotoKtp ? `<p><b>KTP Terunggah:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Lihat KTP di Drive</a></p>` : ''}
-                        ${item.buktiTf ? `<p><b>Bukti TF Admin:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti Transfer</a></p>` : ''}
+                        ${item.fotoKtp ? `<p><b>KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Lihat di Drive</a></p>` : ''}
+                        ${item.buktiTf ? `<p><b>Bukti Transfer Admin:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti</a></p>` : ''}
                     </div>`;
                 });
                 document.getElementById('list-history').innerHTML = html || 'Belum ada riwayat.';
@@ -253,13 +301,15 @@
                     html += `<div class="p-3 border rounded bg-white space-y-1">
                         <p><b>ID:</b> ${item.id} | <b>Nasabah:</b> ${item.nama} (${item.username})</p>
                         <p><b>No KTP:</b> ${item.noKtp} | <b>Alamat:</b> ${item.alamat}</p>
-                        <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
                         <p><b>Rekening:</b> ${item.bank} - ${item.noRekening}</p>
-                        <p><b>Foto KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Buka File KTP di GDrive</a></p>
+                        <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
+                        <p><b>Cicilan/bln:</b> ${item.cicilanPerBulan}</p>
+                        <p><b>Jatuh Tempo:</b> ${item.jatuhTempo}</p>
+                        <p><b>Foto KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Buka File KTP</a></p>
                         <p><b>Status:</b> <b>${item.status}</b></p>
                         ${item.status === 'Pending' ? `
                             <div class="mt-2 flex gap-2">
-                                <input type="text" id="bukti-${item.id}" placeholder="Link Bukti Transfer Admin" class="p-1 border rounded w-full">
+                                <input type="text" id="bukti-${item.id}" placeholder="Link Bukti Transfer" class="p-1 border rounded w-full">
                                 <button onclick="approve('${item.id}')" class="bg-green-600 text-white px-3 py-1 rounded">Approve</button>
                             </div>
                         ` : `<p class="text-green-600 font-semibold">Sudah Ditransfer</p>`}
