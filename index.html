@@ -337,6 +337,11 @@
                         ${item.fotoKtp ? `<p><b>KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Lihat di Drive</a></p>` : ''}
                         ${item.buktiTf ? `<p><b>Pencairan Admin:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti Transfer Admin</a></p>` : ''}
                         
+                        <!-- TAMPILAN BUKTI BAYAR YANG SUDAH MASUK -->
+                        ${item.buktiBayar1 ? `<p><b>Bukti Bayar 1:</b> <a href="${item.buktiBayar1}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 1</a></p>` : ''}
+                        ${item.buktiBayar2 ? `<p><b>Bukti Bayar 2:</b> <a href="${item.buktiBayar2}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 2</a></p>` : ''}
+                        ${item.buktiBayar3 ? `<p><b>Bukti Bayar 3:</b> <a href="${item.buktiBayar3}" target="_blank" class="text-green-600 underline font-semibold">Lihat Bukti 3</a></p>` : ''}
+
                         <!-- FORM PEMBAYARAN NASABAH -->
                         ${(isApproved || isVerifikasi) && !isLunas ? `
                             <div class="mt-2 p-2 bg-blue-50 rounded border border-blue-200 space-y-2">
@@ -369,6 +374,10 @@
                         <p><b>Foto KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Buka File KTP</a></p>
                         <p><b>Status:</b> <span class="font-bold ${isLunas ? 'text-green-600' : 'text-blue-600'}">${item.status}</span></p>
                         
+                        ${item.buktiBayar1 ? `<p class="text-xs"><b>Bukti 1:</b> <a href="${item.buktiBayar1}" target="_blank" class="text-blue-600 underline">Lihat</a></p>` : ''}
+                        ${item.buktiBayar2 ? `<p class="text-xs"><b>Bukti 2:</b> <a href="${item.buktiBayar2}" target="_blank" class="text-blue-600 underline">Lihat</a></p>` : ''}
+                        ${item.buktiBayar3 ? `<p class="text-xs"><b>Bukti 3:</b> <a href="${item.buktiBayar3}" target="_blank" class="text-blue-600 underline">Lihat</a></p>` : ''}
+
                         ${isPending ? `
                             <div class="mt-2 flex flex-col gap-2 p-2 bg-gray-50 rounded border">
                                 <label class="text-xs font-semibold text-gray-700">Upload Bukti Transfer Pencairan:</label>
@@ -380,7 +389,6 @@
                         ${isVerifikasi ? `
                             <div class="mt-2 p-2 bg-yellow-50 rounded border border-yellow-200 space-y-2">
                                 <p class="font-bold text-yellow-900 text-xs">Nasabah Mengirim Bukti Bayar:</p>
-                                ${item.buktiBayar ? `<a href="${item.buktiBayar}" target="_blank" class="text-blue-600 underline text-xs font-semibold">Lihat Bukti Transfer Nasabah</a>` : ''}
                                 <button onclick="verifikasiBayar('${item.id}', '${item.status}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded font-semibold w-full text-xs">Verifikasi Pembayaran Ini</button>
                             </div>
                         ` : ''}
@@ -392,7 +400,6 @@
             }
         }
 
-        // FUNGSI ADMIN VERIFIKASI PEMBAYARAN
         async function verifikasiBayar(id, statusString) {
             let ketMatch = statusString.match(/\((.*?)\)/);
             let ket = ketMatch ? ketMatch[1] : "Pelunasan Total";
@@ -413,7 +420,6 @@
             }
         }
 
-        // FUNGSI NASABAH KIRIM BUKTI BAYAR
         async function kirimPembayaran(id, namaNasabah, noKtpNasabah) {
             let fileInput = document.getElementById(`file-bayar-${id}`);
             let ketSelect = document.getElementById(`ket-bayar-${id}`).value;
@@ -431,7 +437,13 @@
                 let base64Data = reader.result;
                 let cleanNama = namaNasabah.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase();
                 let ext = file.name.split('.').pop();
-                let customFileName = `BUKTI BAYAR - ${ketSelect} - ${cleanNama} - ${noKtpNasabah}.${ext}`;
+                
+                // Format Nama File GDrive: BUKTI BAYAR - NAMA - NOKTP - TEMPO 1/2/3
+                let tempoNum = "1";
+                if (ketSelect.includes("Ke-2")) tempoNum = "2";
+                else if (ketSelect.includes("Ke-3") || ketSelect.includes("Pelunasan")) tempoNum = "3";
+
+                let customFileName = `BUKTI BAYAR - ${cleanNama} - ${noKtpNasabah} - TEMPO ${tempoNum}.${ext}`;
 
                 let payload = {
                     action: 'submitPayment',
@@ -456,7 +468,6 @@
             reader.readAsDataURL(file);
         }
 
-        // FUNGSI UNGGAH BUKTI TRANSFER UNTUK ADMIN
         async function approve(id, namaNasabah, noKtpNasabah) {
             let fileInput = document.getElementById(`bukti-${id}`);
             
