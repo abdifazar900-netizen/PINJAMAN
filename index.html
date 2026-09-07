@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pinjaman Mikro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Container Utama -->
+    <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-lg p-6 flex flex-col justify-between">
+        
+        <!-- BAGIAN LOGIN -->
+        <div id="view-login" class="space-y-4 my-auto">
+            <h1 class="text-2xl font-bold text-center text-blue-600">Pinjaman Kilat Mikro</h1>
+            <p class="text-xs text-center text-gray-500">Silakan login atau daftar untuk mengajukan pinjaman.</p>
+            <form id="form-login" class="space-y-3">
+                <input type="text" id="login-user" placeholder="Username" required class="w-full p-3 border rounded-lg text-sm">
+                <input type="password" id="login-pass" placeholder="Password" required class="w-full p-3 border rounded-lg text-sm">
+                <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold">Login</button>
+            </form>
+            <button onclick="switchView('register')" class="w-full text-center text-sm text-blue-500 mt-2">Belum punya akun? Daftar</button>
+        </div>
+
+        <!-- BAGIAN REGISTER -->
+        <div id="view-register" class="hidden space-y-3 my-auto">
+            <h1 class="text-xl font-bold text-center text-blue-600">Daftar Akun Baru</h1>
+            <form id="form-register" class="space-y-2 text-sm">
+                <input type="text" id="reg-user" placeholder="Buat Username" required class="w-full p-2.5 border rounded">
+                <input type="password" id="reg-pass" placeholder="Buat Password" required class="w-full p-2.5 border rounded">
+                <input type="text" id="reg-nama" placeholder="Nama Lengkap sesuai KTP" required class="w-full p-2.5 border rounded">
+                <input type="text" id="reg-ktp" placeholder="Nomor KTP (16 Digit)" required class="w-full p-2.5 border rounded">
+                <textarea id="reg-alamat" placeholder="Alamat Lengkap" required class="w-full p-2.5 border rounded"></textarea>
+                <input type="text" id="reg-bank" placeholder="Nama Bank (BCA/BRI/Mandiri, dll)" required class="w-full p-2.5 border rounded">
+                <input type="text" id="reg-rekening" placeholder="Nomor Rekening" required class="w-full p-2.5 border rounded">
+                <button type="submit" class="w-full bg-green-600 text-white p-2.5 rounded font-semibold">Daftar Sekarang</button>
+            </form>
+            <button onclick="switchView('login')" class="w-full text-center text-sm text-gray-500 mt-2">Kembali ke Login</button>
+        </div>
+
+        <!-- BAGIAN DASHBOARD NASABAH -->
+        <div id="view-nasabah" class="hidden space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <div>
+                    <h2 class="font-bold text-lg" id="welcome-user">Halo</h2>
+                    <span class="text-xs text-green-600 font-semibold">Akun Nasabah Aktif</span>
+                </div>
+                <button onclick="logout()" class="text-xs bg-red-100 text-red-600 px-3 py-1.5 rounded">Keluar</button>
+            </div>
+
+            <div class="bg-blue-50 p-4 rounded-xl space-y-3">
+                <h3 class="font-bold text-blue-900 text-sm">Form Pengajuan Pinjaman</h3>
+                <form id="form-loan" class="space-y-2 text-sm">
+                    <div>
+                        <label class="text-xs text-gray-600">Nominal Pinjaman (Rp100rb - Rp1jt)</label>
+                        <select id="loan-nominal" class="w-full p-2 border rounded bg-white">
+                            <option value="100000">Rp100.000</option>
+                            <option value="500000">Rp500.000</option>
+                            <option value="1000000">Rp1.000.000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-600">Tenor / Jangka Waktu</label>
+                        <select id="loan-tenor" class="w-full p-2 border rounded bg-white">
+                            <option value="1 Bulan">1 Bulan</option>
+                            <option value="2 Bulan">2 Bulan</option>
+                            <option value="3 Bulan">3 Bulan (Cicilan Rp390rb/bln)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-600">Foto KTP (Link Gambar / GDrive)</label>
+                        <input type="text" id="loan-foto" placeholder="Tempel link foto KTP di sini" required class="w-full p-2 border rounded bg-white">
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-semibold">Ajukan & Kirim ke WA Admin</button>
+                </form>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-sm mb-2">Riwayat Pengajuan Anda</h4>
+                <div id="list-history" class="space-y-2 text-xs"></div>
+            </div>
+        </div>
+
+        <!-- BAGIAN DASHBOARD ADMIN -->
+        <div id="view-admin" class="hidden space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h2 class="font-bold text-lg text-red-600">Panel Admin</h2>
+                <button onclick="logout()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded">Keluar</button>
+            </div>
+            <div>
+                <h3 class="font-bold text-sm mb-2">Daftar Pengajuan Masuk</h3>
+                <div id="list-admin-loans" class="space-y-3 text-xs"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjOgNehCPuHQAbqgfosE51pIPPDCHP7kiGquHhtr_GSAb9Uij0CaAxhtinXqb_pOE-fQ/exec";
+        const ADMIN_WA = "6285891503495"; // Ganti dengan nomor WhatsApp Admin (awali 62)
+
+        function switchView(viewId) {
+            ['login', 'register', 'nasabah', 'admin'].forEach(v => {
+                document.getElementById('view-' + v).classList.add('hidden');
+            });
+            document.getElementById('view-' + viewId).classList.remove('hidden');
+        }
+
+        // Handle Login
+        document.getElementById('form-login').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+            
+            let res = await fetch(`${SCRIPT_URL}?action=login&username=${u}&password=${p}`);
+            let json = await res.json();
+            
+            if(json.status === 'success') {
+                localStorage.setItem('user', JSON.stringify(json));
+                checkSession();
+            } else {
+                alert(json.message);
+            }
+        });
+
+        // Handle Register
+        document.getElementById('form-register').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let data = {
+                action: 'register',
+                username: document.getElementById('reg-user').value,
+                password: document.getElementById('reg-pass').value,
+                namaLengkap: document.getElementById('reg-nama').value,
+                noKtp: document.getElementById('reg-ktp').value,
+                alamat: document.getElementById('reg-alamat').value,
+                bank: document.getElementById('reg-bank').value,
+                noRekening: document.getElementById('reg-rekening').value
+            };
+
+            let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+            let json = await res.json();
+            alert(json.message);
+            if(json.status === 'success') switchView('login');
+        });
+
+        // Handle Loan Application
+        document.getElementById('form-loan').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let user = JSON.parse(localStorage.getItem('user'));
+            let nominal = document.getElementById('loan-nominal').value;
+            let tenor = document.getElementById('loan-tenor').value;
+            let foto = document.getElementById('loan-foto').value;
+
+            // Ambil detail data lengkap user dari form/storage jika perlu, tapi di backend sudah tersimpan saat register
+            let data = {
+                action: 'applyLoan',
+                username: user.username,
+                namaLengkap: user.nama || user.username,
+                noKtp: "-",
+                alamat: "-",
+                fotoKtp: foto,
+                bank: "-",
+                noRekening: "-",
+                nominal: nominal,
+                tenor: tenor
+            };
+
+            let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+            let json = await res.json();
+            
+            if(json.status === 'success') {
+                alert("Pengajuan Berhasil Disimpan!");
+                // Redirect otomatis ke WhatsApp Admin
+                let waMessage = `Halo Admin, saya ${user.username} telah mengajukan pinjaman sebesar Rp${Number(nominal).toLocaleString()} dengan tenor ${tenor}. Mohon diproses ya. ID: ${json.loanId}`;
+                window.location.href = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMessage)}`;
+            }
+        });
+
+        async function loadHistory() {
+            let user = JSON.parse(localStorage.getItem('user'));
+            let res = await fetch(`${SCRIPT_URL}?action=getLoans&role=${user.role}&username=${user.username}`);
+            let json = await res.json();
+            
+            if(user.role === 'nasabah') {
+                let html = '';
+                json.data.forEach(item => {
+                    html += `<div class="p-3 border rounded bg-white space-y-1">
+                        <p><b>ID:</b> ${item.id}</p>
+                        <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
+                        <p><b>Status:</b> <span class="px-2 py-0.5 rounded text-white ${item.status === 'Approved' ? 'bg-green-500' : 'bg-yellow-500'}">${item.status}</span></p>
+                        ${item.buktiTf ? `<p><b>Bukti TF:</b> <a href="${item.buktiTf}" target="_blank" class="text-blue-500 underline">Lihat Bukti</a></p>` : ''}
+                    </div>`;
+                });
+                document.getElementById('list-history').innerHTML = html || 'Belum ada riwayat.';
+            } else if(user.role === 'admin') {
+                let html = '';
+                json.data.forEach(item => {
+                    html += `<div class="p-3 border rounded bg-white space-y-1">
+                        <p><b>ID:</b> ${item.id} | <b>User:</b> ${item.username} (${item.nama})</p>
+                        <p><b>Nominal:</b> Rp${Number(item.nominal).toLocaleString()} (${item.tenor})</p>
+                        <p><b>Rekening:</b> ${item.bank} - ${item.noRekening}</p>
+                        <p><b>KTP:</b> <a href="${item.fotoKtp}" target="_blank" class="text-blue-500 underline">Link KTP</a></p>
+                        <p><b>Status:</b> <b>${item.status}</b></p>
+                        ${item.status === 'Pending' ? `
+                            <div class="mt-2 flex gap-2">
+                                <input type="text" id="bukti-${item.id}" placeholder="Link Bukti Transfer" class="p-1 border rounded w-full">
+                                <button onclick="approve('${item.id}')" class="bg-green-600 text-white px-3 py-1 rounded">Approve</button>
+                            </div>
+                        ` : `<p class="text-green-600 font-semibold">Sudah Ditransfer</p>`}
+                    </div>`;
+                });
+                document.getElementById('list-admin-loans').innerHTML = html || 'Tidak ada pengajuan masuk.';
+            }
+        }
+
+        async function approve(id) {
+            let buktiUrl = document.getElementById(`bukti-${id}`).value;
+            if(!buktiUrl) return alert("Masukkan link bukti transfer terlebih dahulu!");
+            
+            let res = await fetch(`${SCRIPT_URL}?action=approve&id=${id}&buktiUrl=${encodeURIComponent(buktiUrl)}`);
+            let json = await res.json();
+            alert(json.message);
+            loadHistory();
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            checkSession();
+        }
+
+        function checkSession() {
+            let user = localStorage.getItem('user');
+            if(!user) {
+                switchView('login');
+                return;
+            }
+            let data = JSON.parse(user);
+            if(data.role === 'admin') {
+                switchView('admin');
+            } else {
+                switchView('nasabah');
+                document.getElementById('welcome-user').innerText = `Halo, ${data.username}`;
+            }
+            loadHistory();
+        }
+
+        checkSession();
+    </script>
+</body>
+</html>
