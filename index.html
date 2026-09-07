@@ -36,7 +36,22 @@
                 <input type="password" id="reg-pass" placeholder="Buat Password" required class="w-full p-2.5 border rounded">
                 <input type="text" id="reg-nama" placeholder="Nama Lengkap sesuai KTP" required class="w-full p-2.5 border rounded">
                 <input type="text" id="reg-ktp" placeholder="Nomor KTP (16 Digit)" required class="w-full p-2.5 border rounded">
-                <textarea id="reg-alamat" placeholder="Alamat Lengkap" required class="w-full p-2.5 border rounded"></textarea>
+                <input type="text" id="reg-wa" placeholder="Nomor WhatsApp (Contoh: 08123456789)" required class="w-full p-2.5 border rounded">
+                
+                <!-- DETAIL ALAMAT TERPERINCI -->
+                <div class="bg-gray-50 p-3 rounded border space-y-2">
+                    <label class="text-xs font-bold text-gray-700">Detail Alamat Tempat Tinggal:</label>
+                    <input type="text" id="reg-kp" placeholder="Kampung / Jalan / Perumahan" required class="w-full p-2 border rounded bg-white text-xs">
+                    <div class="flex gap-2">
+                        <input type="text" id="reg-rt" placeholder="RT" required class="w-1/2 p-2 border rounded bg-white text-xs">
+                        <input type="text" id="reg-rw" placeholder="RW" required class="w-1/2 p-2 border rounded bg-white text-xs">
+                    </div>
+                    <input type="text" id="reg-desa" placeholder="Desa / Kelurahan" required class="w-full p-2 border rounded bg-white text-xs">
+                    <input type="text" id="reg-kec" placeholder="Kecamatan" required class="w-full p-2 border rounded bg-white text-xs">
+                    <input type="text" id="reg-kab" placeholder="Kabupaten / Kota" required class="w-full p-2 border rounded bg-white text-xs">
+                    <input type="text" id="reg-prov" placeholder="Provinsi" required class="w-full p-2 border rounded bg-white text-xs">
+                </div>
+
                 <input type="text" id="reg-bank" placeholder="Nama Bank (BCA/BRI/Mandiri, dll)" required class="w-full p-2.5 border rounded">
                 <input type="text" id="reg-rekening" placeholder="Nomor Rekening" required class="w-full p-2.5 border rounded">
                 <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white p-2.5 rounded font-semibold">Daftar Sekarang</button>
@@ -44,7 +59,7 @@
             <button onclick="switchView('login')" class="w-full text-center text-sm text-gray-500 mt-2">Kembali ke Login</button>
         </div>
 
-        <!-- DASHBOARD UTAMA NASABAH (DENGAN NAVBAR) -->
+        <!-- DASHBOARD NASABAH -->
         <div id="view-nasabah" class="hidden flex flex-col justify-between min-h-screen">
             <div class="bg-blue-600 text-white p-4 flex justify-between items-center shadow">
                 <div>
@@ -115,7 +130,8 @@
                             <p><b>Nama Lengkap:</b> <span id="profil-nama">-</span></p>
                             <p><b>Username:</b> <span id="profil-username">-</span></p>
                             <p><b>Nomor KTP:</b> <span id="profil-ktp">-</span></p>
-                            <p><b>Alamat:</b> <span id="profil-alamat">-</span></p>
+                            <p><b>No WhatsApp:</b> <span id="profil-wa">-</span></p>
+                            <p><b>Alamat Lengkap:</b> <span id="profil-alamat">-</span></p>
                             <p><b>Bank Tujuan:</b> <span id="profil-bank">-</span></p>
                             <p><b>Nomor Rekening:</b> <span id="profil-rekening">-</span></p>
                         </div>
@@ -141,7 +157,7 @@
             </div>
         </div>
 
-        <!-- DASHBOARD UTAMA ADMIN (DENGAN NAVBAR & FITUR H-7) -->
+        <!-- DASHBOARD ADMIN -->
         <div id="view-admin" class="hidden flex flex-col justify-between min-h-screen">
             <div class="bg-red-600 text-white p-4 flex justify-between items-center shadow">
                 <h2 class="font-bold text-sm">Panel Admin</h2>
@@ -149,13 +165,11 @@
             </div>
 
             <div class="p-4 flex-grow space-y-4">
-                <!-- TAB 1 ADMIN: KELOLA & APPROVE PINJAMAN -->
                 <div id="tab-admin-approve" class="space-y-3">
                     <h3 class="font-bold text-gray-800 text-sm">Daftar Pengajuan Masuk & Pembayaran</h3>
                     <div id="list-admin-loans" class="space-y-3 text-xs"></div>
                 </div>
 
-                <!-- TAB 2 ADMIN: JATUH TEMPO H-7 -->
                 <div id="tab-admin-jatuhtempo" class="hidden space-y-3">
                     <h3 class="font-bold text-gray-800 text-sm">Nasabah Jatuh Tempo (H-7)</h3>
                     <p class="text-[11px] text-gray-500">Daftar nasabah yang memiliki jadwal jatuh tempo dalam 7 hari ke depan atau sudah lewat.</p>
@@ -163,7 +177,6 @@
                 </div>
             </div>
 
-            <!-- NAVBAR BAWAH ADMIN -->
             <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 flex justify-around p-2 shadow-lg z-40">
                 <button onclick="switchTabAdmin('approve')" id="nav-admin-approve" class="flex flex-col items-center text-red-600 font-semibold text-[11px] w-1/2 py-1">
                     <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -202,7 +215,6 @@
             document.getElementById('view-' + viewId).classList.remove('hidden');
         }
 
-        // NAVIGASI TAB NASABAH
         function switchTabNasabah(tabName) {
             ['pengajuan', 'riwayat', 'akun'].forEach(t => {
                 document.getElementById('tab-nasabah-' + t).classList.add('hidden');
@@ -216,7 +228,6 @@
             if(tabName === 'riwayat') loadHistory();
         }
 
-        // NAVIGASI TAB ADMIN
         function switchTabAdmin(tabName) {
             ['approve', 'jatuhtempo'].forEach(t => {
                 document.getElementById('tab-admin-' + t).classList.add('hidden');
@@ -317,16 +328,29 @@
             }
         });
 
-        // Handle Register
+        // Handle Register dengan format alamat baru & No WhatsApp
         document.getElementById('form-register').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            let kp = document.getElementById('reg-kp').value;
+            let rt = document.getElementById('reg-rt').value;
+            let rw = document.getElementById('reg-rw').value;
+            let desa = document.getElementById('reg-desa').value;
+            let kec = document.getElementById('reg-kec').value;
+            let kab = document.getElementById('reg-kab').value;
+            let prov = document.getElementById('reg-prov').value;
+
+            // Menggabungkan alamat menjadi satu string rapi
+            let alamatGabungan = `Kp. ${kp}, RT ${rt}/RW ${rw}, Desa/Kel. ${desa}, Kec. ${kec}, Kab/Kota ${kab}, Prov. ${prov}`;
+
             let data = {
                 action: 'register',
                 username: document.getElementById('reg-user').value,
                 password: document.getElementById('reg-pass').value,
                 namaLengkap: document.getElementById('reg-nama').value,
                 noKtp: document.getElementById('reg-ktp').value,
-                alamat: document.getElementById('reg-alamat').value,
+                noWa: document.getElementById('reg-wa').value,
+                alamatLengkap: alamatGabungan,
                 bank: document.getElementById('reg-bank').value,
                 noRekening: document.getElementById('reg-rekening').value
             };
@@ -405,7 +429,6 @@
             reader.readAsDataURL(file);
         });
 
-        // LOAD RIWAYAT NASABAH
         async function loadHistory() {
             let user = JSON.parse(localStorage.getItem('user'));
             let res = await fetch(`${SCRIPT_URL}?action=getLoans&role=${user.role}&username=${user.username}`);
@@ -454,7 +477,6 @@
             document.getElementById('list-history').innerHTML = html || 'Belum ada riwayat pengajuan.';
         }
 
-        // LOAD DATA ADMIN (APPROVE & JATUH TEMPO H-7)
         async function loadAdminData() {
             let user = JSON.parse(localStorage.getItem('user'));
             let res = await fetch(`${SCRIPT_URL}?action=getLoans&role=${user.role}&username=${user.username}`);
@@ -465,14 +487,11 @@
             let today = new Date();
             today.setHours(0,0,0,0);
 
-            let countH7 = 0;
-
             json.data.forEach(item => {
                 let isPending = item.status === 'Pending';
                 let isVerifikasi = item.status.includes('Menunggu Verifikasi');
                 let isLunas = item.status === 'LUNAS';
 
-                // Render Tab Approve
                 htmlApprove += `<div class="p-3 border rounded bg-white space-y-1 shadow-sm">
                     <p><b>ID:</b> ${item.id} | <b>Nasabah:</b> ${item.nama}</p>
                     <p><b>Rekening:</b> ${item.bank} - ${item.noRekening}</p>
@@ -503,7 +522,6 @@
                     ${isLunas ? `<p class="text-green-600 font-bold mt-1">✓ LUNAS TOTAL</p>` : ''}
                 </div>`;
 
-                // Logika Cek H-7 Jatuh Tempo (Hanya untuk pinjaman yang belum lunas)
                 if (!isLunas && item.jatuhTempo) {
                     let parts = item.jatuhTempo.split(",");
                     parts.forEach(part => {
@@ -513,9 +531,7 @@
                             let diffTime = tglTempo - today;
                             let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                            // Jika sudah lewat atau mendekati 7 hari ke depan (<= 7)
                             if (diffDays <= 7) {
-                                countH7++;
                                 let statusWaktu = diffDays < 0 ? `<span class="text-red-600 font-bold">Terlambat ${Math.abs(diffDays)} hari</span>` : (diffDays === 0 ? `<span class="text-red-600 font-bold">Jatuh tempo HARI INI</span>` : `<span class="text-orange-500 font-semibold">Jatuh tempo dalam ${diffDays} hari</span>`);
 
                                 htmlJatuhTempo += `<div class="p-3 border rounded bg-orange-50 border-orange-200 space-y-1 shadow-sm">
@@ -665,6 +681,7 @@
                 document.getElementById('profil-nama').innerText = data.nama;
                 document.getElementById('profil-username').innerText = data.username;
                 document.getElementById('profil-ktp').innerText = data.noKtp;
+                document.getElementById('profil-wa').innerText = data.noWa || "-";
                 document.getElementById('profil-alamat').innerText = data.alamat;
                 document.getElementById('profil-bank').innerText = data.bank;
                 document.getElementById('profil-rekening').innerText = data.noRekening;
