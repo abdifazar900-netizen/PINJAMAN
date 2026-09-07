@@ -6,7 +6,13 @@
     <title>Aplikasi Pinjaman Mikro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 relative">
+
+    <!-- LAYER LOADING (Menutupi Seluruh Layar saat proses) -->
+    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 hidden flex-col items-center justify-center">
+        <div class="animate-spin rounded-full h-14 w-14 border-t-4 border-b-4 border-white mb-4"></div>
+        <p id="loading-text" class="text-white font-semibold text-center px-4">Sedang memproses...</p>
+    </div>
 
     <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-lg p-6 flex flex-col justify-between">
         
@@ -74,19 +80,17 @@
                         <div class="flex gap-2">
                             <input type="file" id="loan-foto-file" accept="image/*" capture="environment" required class="w-full p-1 border rounded bg-white text-xs" onchange="checkFormValidity()">
                         </div>
-                        <p class="text-[10px] text-gray-500">*Klik untuk pilih Kamera (langsung foto) atau Galeri file HP.</p>
                     </div>
 
-                    <div class="bg-gray-100 p-2.5 rounded border text-[11px] text-gray-600 space-y-1 max-h-28 overflow-y-auto mt-2">
-                        <p class="font-bold text-gray-800">Perjanjian & Ketentuan Pinjaman:</p>
-                        <p>1. Saya menyatakan data diri dan nomor rekening yang diberikan adalah benar.</p>
-                        <p>2. Saya sanggup melunasi cicilan tepat waktu sesuai jadwal jatuh tempo yang tertera.</p>
-                        <p>3. Keterlambatan pembayaran dapat berdampak pada penghentian fasilitas pinjaman selanjutnya.</p>
+                    <div class="bg-gray-100 p-2.5 rounded border text-[11px] text-gray-600 space-y-1 mt-2">
+                        <p class="font-bold text-gray-800">Perjanjian & Ketentuan:</p>
+                        <p>1. Data diri dan rekening yang diberikan adalah benar.</p>
+                        <p>2. Sanggup melunasi cicilan sesuai jadwal jatuh tempo.</p>
                     </div>
 
                     <div class="flex items-center gap-2 pt-1 pb-2">
                         <input type="checkbox" id="check-setuju" required class="w-4 h-4 text-blue-600 rounded" onchange="checkFormValidity()">
-                        <label for="check-setuju" class="text-xs font-semibold text-gray-700">Saya menyetujui ketentuan perjanjian pinjaman</label>
+                        <label for="check-setuju" class="text-xs font-semibold text-gray-700">Saya menyetujui perjanjian pinjaman</label>
                     </div>
 
                     <button type="submit" id="btn-submit-loan" disabled class="w-full bg-gray-400 text-white py-2 rounded font-semibold cursor-not-allowed transition-all duration-300">Lengkapi Data Untuk Mengajukan</button>
@@ -114,8 +118,24 @@
     </div>
 
     <script>
+        // GANTI DENGAN URL WEB APP YANG BARU JIKA BERUBAH
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNd9RLtiwP1u-Zbaxk_tZ2cvndMkB4K_uZ6Wno_Xl2YPEFlwkPcAY0kVWVhg-ICGNS2A/exec";
-        const ADMIN_WA = "628xxxxxxxxxx"; // Ganti nomor WhatsApp Admin
+        const ADMIN_WA = "628xxxxxxxxxx"; // Ganti nomor WA Admin
+
+        // ================= FUNGSI LOADING =================
+        function showLoading(text = "Sedang memproses...") {
+            document.getElementById('loading-text').innerText = text;
+            let overlay = document.getElementById('loading-overlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        function hideLoading() {
+            let overlay = document.getElementById('loading-overlay');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+        }
+        // ==================================================
 
         function switchView(viewId) {
             ['login', 'register', 'nasabah', 'admin'].forEach(v => {
@@ -187,22 +207,31 @@
             `;
         }
 
+        // Handle Login
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             let u = document.getElementById('login-user').value;
             let p = document.getElementById('login-pass').value;
             
-            let res = await fetch(`${SCRIPT_URL}?action=login&username=${u}&password=${p}`);
-            let json = await res.json();
-            
-            if(json.status === 'success') {
-                localStorage.setItem('user', JSON.stringify(json));
-                checkSession();
-            } else {
-                alert(json.message);
+            showLoading("Sedang masuk...");
+            try {
+                let res = await fetch(`${SCRIPT_URL}?action=login&username=${u}&password=${p}`);
+                let json = await res.json();
+                
+                if(json.status === 'success') {
+                    localStorage.setItem('user', JSON.stringify(json));
+                    checkSession();
+                } else {
+                    alert(json.message);
+                }
+            } catch (err) {
+                alert("Kesalahan jaringan.");
+            } finally {
+                hideLoading();
             }
         });
 
+        // Handle Register
         document.getElementById('form-register').addEventListener('submit', async (e) => {
             e.preventDefault();
             let data = {
@@ -216,26 +245,31 @@
                 noRekening: document.getElementById('reg-rekening').value
             };
 
-            let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
-            let json = await res.json();
-            alert(json.message);
-            if(json.status === 'success') switchView('login');
+            showLoading("Mendaftarkan akun Anda...");
+            try {
+                let res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) });
+                let json = await res.json();
+                alert(json.message);
+                if(json.status === 'success') switchView('login');
+            } catch (err) {
+                alert("Kesalahan jaringan.");
+            } finally {
+                hideLoading();
+            }
         });
 
+        // Handle Loan Application & Upload KTP
         document.getElementById('form-loan').addEventListener('submit', async (e) => {
             e.preventDefault();
             let user = JSON.parse(localStorage.getItem('user'));
             let nominal = document.getElementById('loan-nominal').value;
             let tenorBulan = document.getElementById('loan-tenor').value;
             let fileInput = document.getElementById('loan-foto-file');
-            let btnSubmit = document.getElementById('btn-submit-loan');
-
+            
             let file = fileInput.files[0];
             let reader = new FileReader();
 
-            btnSubmit.innerText = "Sedang Mengunggah & Memproses...";
-            btnSubmit.disabled = true;
-            btnSubmit.className = "w-full bg-blue-400 text-white py-2 rounded font-semibold cursor-wait";
+            showLoading("Mengunggah foto KTP dan memproses pengajuan...\nMohon tunggu.");
 
             reader.onload = async function () {
                 let base64Data = reader.result;
@@ -278,6 +312,7 @@
                     document.getElementById('form-loan').reset();
                     document.getElementById('info-simulasi').innerHTML = `<div>Estimasi Cicilan: <b>Rp0 / bulan</b></div><div>Jadwal Jatuh Tempo: <b>-</b></div>`;
                     checkFormValidity();
+                    hideLoading();
                     loadHistory();
                 }
             };
@@ -306,7 +341,6 @@
             } else if(user.role === 'admin') {
                 let html = '';
                 json.data.forEach(item => {
-                    // Pilihan Tampilan Admin
                     html += `<div class="p-3 border rounded bg-white space-y-1">
                         <p><b>ID:</b> ${item.id} | <b>Nasabah:</b> ${item.nama}</p>
                         <p><b>Rekening:</b> ${item.bank} - ${item.noRekening}</p>
@@ -318,7 +352,7 @@
                             <div class="mt-2 flex flex-col gap-2 p-2 bg-gray-50 rounded border">
                                 <label class="text-xs font-semibold text-gray-700">Upload Bukti Transfer:</label>
                                 <input type="file" id="bukti-${item.id}" accept="image/*" class="w-full p-1 border rounded bg-white text-xs">
-                                <button id="btn-approve-${item.id}" onclick="approve('${item.id}', '${item.nama}', '${item.noKtp}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded font-semibold w-full transition">Approve & Upload</button>
+                                <button onclick="approve('${item.id}', '${item.nama}', '${item.noKtp}')" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded font-semibold w-full transition">Approve & Upload</button>
                             </div>
                         ` : `<p class="text-green-600 font-semibold">Sudah Ditransfer - <a href="${item.buktiTf}" target="_blank" class="underline">Lihat Bukti</a></p>`}
                     </div>`;
@@ -337,16 +371,11 @@
             
             let file = fileInput.files[0];
             let reader = new FileReader();
-            let btn = document.getElementById(`btn-approve-${id}`);
 
-            btn.innerText = "Sedang Mengunggah Bukti...";
-            btn.disabled = true;
-            btn.className = "bg-gray-400 text-white px-3 py-1.5 rounded font-semibold w-full cursor-wait";
+            showLoading("Mengunggah bukti transfer ke GDrive...\nMohon tunggu.");
 
             reader.onload = async function () {
                 let base64Data = reader.result;
-                
-                // Format Nama File Bukti: BUKTI PINJAM - NAMA - NOKTP
                 let cleanNama = namaNasabah.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase();
                 let ext = file.name.split('.').pop();
                 let customFileName = `BUKTI PINJAM - ${cleanNama} - ${noKtpNasabah}.${ext}`;
@@ -366,9 +395,8 @@
                     loadHistory();
                 } catch(err) {
                     alert("Terjadi kesalahan saat mengunggah bukti.");
-                    btn.innerText = "Approve & Upload";
-                    btn.disabled = false;
-                    btn.className = "bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded font-semibold w-full transition";
+                } finally {
+                    hideLoading();
                 }
             };
             
