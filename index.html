@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Aplikasi Kilas Pinjaman</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -10,10 +10,21 @@
     <meta name="theme-color" content="#4f46e5">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2830/2830284.png">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; position: fixed; width: 100%; height: 100%; }
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            position: fixed;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0f172a;
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-800 flex justify-center items-center">
+<body class="flex justify-center items-center">
 
     <!-- LAYER LOADING -->
     <div id="loading-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
@@ -21,11 +32,11 @@
         <p id="loading-text" class="text-white font-medium text-sm tracking-wide">Sedang memproses...</p>
     </div>
 
-    <!-- KONTAINER UTAMA (FIXED FULL SCREEN HP) -->
+    <!-- KONTAINER UTAMA APLIKASI (TERKUNCI PENUH DI LAYAR HP) -->
     <div id="app" class="w-full max-w-md h-[100dvh] bg-slate-50 flex flex-col justify-between overflow-hidden relative shadow-2xl">
         
         <!-- BAGIAN LOGIN -->
-        <div id="view-login" class="flex-grow overflow-y-auto p-8 flex flex-col justify-center space-y-6">
+        <div id="view-login" class="flex flex-col h-full w-full absolute inset-0 bg-slate-50 overflow-y-auto p-8 justify-center space-y-6 z-30">
             <div class="text-center space-y-2">
                 <div class="w-16 h-16 bg-gradient-to-tr from-indigo-600 to-blue-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white text-2xl font-bold">💳</div>
                 <h1 class="text-2xl font-bold text-slate-900">Kilas Pinjam</h1>
@@ -34,11 +45,11 @@
             <form id="form-login" class="space-y-4">
                 <div>
                     <label class="text-xs font-semibold text-slate-600 mb-1 block">Username</label>
-                    <input type="text" id="login-user" placeholder="Masukkan username" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <input type="text" id="login-user" placeholder="Masukkan username" required class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
                 <div>
                     <label class="text-xs font-semibold text-slate-600 mb-1 block">Password</label>
-                    <input type="password" id="login-pass" placeholder="••••••••" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <input type="password" id="login-pass" placeholder="••••••••" required class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white py-3 rounded-xl font-semibold text-sm shadow-lg shadow-indigo-600/30 transition transform active:scale-95">Masuk Sekarang</button>
             </form>
@@ -46,12 +57,12 @@
         </div>
 
         <!-- BAGIAN REGISTER -->
-        <div id="view-register" class="hidden flex-grow overflow-y-auto p-6 space-y-4">
-            <div class="text-center pb-2">
+        <div id="view-register" class="hidden flex flex-col h-full w-full absolute inset-0 bg-slate-50 overflow-y-auto p-6 space-y-4 z-30">
+            <div class="text-center pb-2 pt-2">
                 <h1 class="text-xl font-bold text-slate-900">Pendaftaran Akun Baru</h1>
                 <p class="text-xs text-slate-500">Lengkapi data diri Anda dengan benar</p>
             </div>
-            <form id="form-register" class="space-y-3 text-xs pb-6">
+            <form id="form-register" class="space-y-3 text-xs pb-10">
                 <div>
                     <label class="font-semibold text-slate-600 mb-1 block">Username</label>
                     <input type="text" id="reg-user" placeholder="Buat username unik" required class="w-full p-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 transition">
@@ -96,12 +107,13 @@
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white p-3 rounded-xl font-semibold shadow-lg shadow-emerald-600/20 transition mt-2">Daftar Sekarang</button>
             </form>
-            <button onclick="switchView('login')" class="w-full text-center text-xs text-slate-500 hover:text-slate-800 pb-6">Sudah punya akun? Login</button>
+            <button onclick="switchView('login')" class="w-full text-center text-xs text-slate-500 hover:text-slate-800 pb-10">Sudah punya akun? Login</button>
         </div>
 
-        <!-- DASHBOARD NASABAH (HEADER & FOOTER TERKUNCI, TENGAH SCROLLABLE) -->
-        <div id="view-nasabah" class="hidden flex flex-col h-full overflow-hidden">
-            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-4 flex-shrink-0 flex justify-between items-center shadow-md rounded-b-2xl">
+        <!-- DASHBOARD NASABAH (HEADER & NAVBAR TERKUNCI MATI, TENGAH BISA SCROLL) -->
+        <div id="view-nasabah" class="hidden flex flex-col h-full w-full absolute inset-0 bg-slate-50 overflow-hidden z-30">
+            <!-- HEADER TETAP -->
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-4 flex-shrink-0 flex justify-between items-center shadow-md rounded-b-2xl z-10">
                 <div>
                     <h2 class="font-bold text-sm" id="welcome-user">Halo</h2>
                     <span class="text-[9px] bg-white/25 backdrop-blur px-2 py-0.5 rounded-full text-white font-medium">Nasabah Terverifikasi</span>
@@ -110,7 +122,7 @@
             </div>
 
             <!-- AREA KONTEN TENGAH YANG BISA DIGULIR -->
-            <div class="flex-grow overflow-y-auto p-4 space-y-4">
+            <div class="flex-grow overflow-y-auto p-4 space-y-4 w-full">
                 <!-- TAB 1: PENGAJUAN -->
                 <div id="tab-nasabah-pengajuan" class="space-y-3 pb-6">
                     <div class="bg-gradient-to-br from-white to-indigo-50/50 p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
@@ -181,7 +193,7 @@
             </div>
 
             <!-- NAVBAR BAWAH TETAP -->
-            <div class="bg-white/95 backdrop-blur-md border-t border-slate-200/60 flex-shrink-0 flex justify-around p-2 shadow-lg z-40">
+            <div class="bg-white/95 backdrop-blur-md border-t border-slate-200/60 flex-shrink-0 flex justify-around p-2 shadow-lg z-20">
                 <button onclick="switchTabNasabah('pengajuan')" id="nav-nasabah-pengajuan" class="flex flex-col items-center text-indigo-600 font-semibold text-[10px] w-1/3 py-1 transition">
                     <span class="text-base mb-0.5">📝</span> Pengajuan
                 </button>
@@ -194,9 +206,10 @@
             </div>
         </div>
 
-        <!-- DASHBOARD ADMIN (HEADER & FOOTER TERKUNCI, TENGAH SCROLLABLE) -->
-        <div id="view-admin" class="hidden flex flex-col h-full overflow-hidden">
-            <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-4 flex-shrink-0 flex justify-between items-center shadow-md rounded-b-2xl">
+        <!-- DASHBOARD ADMIN (HEADER & NAVBAR TERKUNCI MATI, TENGAH BISA SCROLL) -->
+        <div id="view-admin" class="hidden flex flex-col h-full w-full absolute inset-0 bg-slate-50 overflow-hidden z-30">
+            <!-- HEADER TETAP -->
+            <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-4 flex-shrink-0 flex justify-between items-center shadow-md rounded-b-2xl z-10">
                 <div>
                     <h2 class="font-bold text-sm">Panel Administrator</h2>
                     <span class="text-[9px] bg-indigo-500/30 text-indigo-200 px-2 py-0.5 rounded-full border border-indigo-500/30">Kontrol Sistem</span>
@@ -205,7 +218,7 @@
             </div>
 
             <!-- AREA KONTEN TENGAH YANG BISA DIGULIR -->
-            <div class="flex-grow overflow-y-auto p-4 space-y-4">
+            <div class="flex-grow overflow-y-auto p-4 space-y-4 w-full">
                 <div id="tab-admin-approve" class="space-y-3 pb-6">
                     <h3 class="font-bold text-slate-900 text-xs">Daftar Pengajuan Masuk & Pembayaran</h3>
                     <div id="list-admin-loans" class="space-y-3 text-xs"></div>
@@ -219,7 +232,7 @@
             </div>
 
             <!-- NAVBAR BAWAH TETAP -->
-            <div class="bg-white/95 backdrop-blur-md border-t border-slate-200/60 flex-shrink-0 flex justify-around p-2 shadow-lg z-40">
+            <div class="bg-white/95 backdrop-blur-md border-t border-slate-200/60 flex-shrink-0 flex justify-around p-2 shadow-lg z-20">
                 <button onclick="switchTabAdmin('approve')" id="nav-admin-approve" class="flex flex-col items-center text-indigo-600 font-semibold text-[10px] w-1/2 py-1 transition">
                     <span class="text-base mb-0.5">📊</span> Kelola Pinjaman
                 </button>
@@ -501,8 +514,8 @@
                         ${item.fotoKtp ? `<a href="${item.fotoKtp}" target="_blank" class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded font-medium">Lihat KTP</a>` : ''}
                         ${item.buktiTf ? `<a href="${item.buktiTf}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded font-medium">Bukti Transfer Admin</a>` : ''}
                         ${item.buktiBayar1 ? `<a href="${item.buktiBayar1}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">Bayar 1</a>` : ''}
-                        ${item.buktiBayar2 ? `<a href="${item.buktiBayar2}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">Bayar 2</a>` : ''}
-                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-medium">Bayar 3</a>` : ''}
+                        ${item.buktiBayar2 ? `<a href="${item.buktiBayar2}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded font-medium">Bayar 2</a>` : ''}
+                        ${item.buktiBayar3 ? `<a href="${item.buktiBayar3}" target="_blank" class="text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded font-medium">Bayar 3</a>` : ''}
                     </div>
 
                     ${isApproved && !isLunas ? `
@@ -707,7 +720,7 @@
                     alert(json.message);
                     loadAdminData();
                 } catch(err) {
-                    alert("Kesalahan saat mengunggah bukti.");
+                    alert("Terjadi kesalahan saat mengunggah bukti.");
                 } finally {
                     hideLoading();
                 }
